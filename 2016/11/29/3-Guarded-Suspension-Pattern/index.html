@@ -96,7 +96,10 @@ Guarded Wait
 </li>
 </ul>
 <h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><ul>
-<li><p>java语言中，检查警戒条件时会使用while语句，而要让线程等待时则使用wait方法。并使用notify/notifyAll 通知警戒条件的改变。检验、修改警戒条件时，会使用到Single Threaded Execution Pattern。</p>
+<li><p>java语言中，检查警戒条件时会使用while语句，而要让线程等待时则使用wait方法(guardedMethod)。并使用notify/notifyAll 通知警戒条件的改变(stateChangingMethod)。检验、修改警戒条件时，会使用到Single Threaded Execution Pattern。</p>
+<center><br><img src="http://ww3.sinaimg.cn/large/8ee2f43bgw1fa9az1w1bqj20ry0h20tu
+" width="450" height="200"><br></center>
+
 <pre><code>/**
  * Created by renwei on 2016/11/18.
  */
