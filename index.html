@@ -52,6 +52,240 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2016-11-29T09:13:41.000Z"><a href="/blog/2016/11/29/5-Producer-Consumer-Pattern/">2016-11-29</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/11/29/5-Producer-Consumer-Pattern/">5.Producer-Consumer Pattern</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><ul>
+<li>我来做，你来用</li>
+</ul>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
+<li>当要从某个线程（Producer参与者）将数据传给其他线程（Consumer参与者）时。</li>
+</ul>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>当Producer参与者与Consumer参与者处理的速度不同时，速度慢的会扯速度快的后腿，而降低程序的 throughput。另外，当Producer参与者要写入数据时，Consumer参与者若同时读取数据，数据会失去安全性。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/11/29/5-Producer-Consumer-Pattern/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-11-29T09:11:56.000Z"><a href="/blog/2016/11/29/4-Balking-Pattern/">2016-11-29</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/11/29/4-Balking-Pattern/">4.Balking Pattern</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><ul>
+<li>不需要的话，就算了吧</li>
+</ul>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
+<li>多个线程共享一个实例</li>
+</ul>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>如多个线程都擅自更改实例的状态，实例会丧失安全性。可以一直等待安全的时机，又会使程序响应性降低。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/11/29/4-Balking-Pattern/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-11-29T09:10:52.000Z"><a href="/blog/2016/11/29/3-Guarded-Suspension-Pattern/">2016-11-29</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/11/29/3-Guarded-Suspension-Pattern/">3.Guarded Suspension Pattern</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><ul>
+<li>等我准备好</li>
+<li>Sprin Lock（自旋锁）</li>
+<li>Guarded Wait</li>
+</ul>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
+<li>多线程共享一个实例。</li>
+</ul>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>若多个线程都擅自更改实例的状态，实例会丧失安全性。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/11/29/3-Guarded-Suspension-Pattern/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-11-29T09:08:58.000Z"><a href="/blog/2016/11/29/2-Immutable-Pattern/">2016-11-29</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/11/29/2-Immutable-Pattern/">2.Immutable Pattern</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><ul>
+<li>想破坏它也没办法</li>
+</ul>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
+<li>多个线程共享一个实例，实例的状态不会改变。</li>
+</ul>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>使用Single Threaded Execution Pattern，会降低 throughpot。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/11/29/2-Immutable-Pattern/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-11-29T09:04:45.000Z"><a href="/blog/2016/11/29/1-Single-Threaded-Execution-Pattern/">2016-11-29</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/11/29/1-Single-Threaded-Execution-Pattern/">1.Single Threaded Execution Pattern</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><ul>
+<li>能通过这座桥的，只有一个人</li>
+<li>Critical Section (临界区)</li>
+<li>Critical Region</li>
+</ul>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
+<li>多个线程共享一个实例。</li>
+</ul>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>若多个线程都擅自更改实例的状态，实例会丧失安全性。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/11/29/1-Single-Threaded-Execution-Pattern/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2016-11-24T08:27:52.000Z"><a href="/blog/2016/11/24/linux查看系统信息/">2016-11-24</a></time>
       
       
@@ -61,7 +295,7 @@
 
     </header>
     <div class="entry">
-      
+         <!--01-->
         <h2 id="系统"><a href="#系统" class="headerlink" title="系统"></a>系统</h2><ul>
 <li><p>查看内核/操作系统/CPU信息</p>
 <pre><code>uname -a 
@@ -115,58 +349,6 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-11-21T02:08:34.000Z"><a href="/blog/2016/11/21/java多线程设计模式/">2016-11-21</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/11/21/java多线程设计模式/">JAVA多线程设计模式(一)</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h2 id="Single-Threaded-Execution-Pattern——能通过这座桥的，只有一个人"><a href="#Single-Threaded-Execution-Pattern——能通过这座桥的，只有一个人" class="headerlink" title="Single Threaded Execution Pattern——能通过这座桥的，只有一个人"></a>Single Threaded Execution Pattern——能通过这座桥的，只有一个人</h2><h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><ul>
-<li>Critical Section (临界区)</li>
-<li>Critical Region</li>
-</ul>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
-<li>多个线程共享一个实例。</li>
-</ul>
-<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
-<li>若多个线程都擅自更改实例的状态，实例会丧失安全性。</li>
-</ul>
-<h3 id="解决方式"><a href="#解决方式" class="headerlink" title="解决方式"></a>解决方式</h3><ul>
-<li>首先，仔细检查出实例状态不稳定的范围（临界区）。并对临界区加以防护，使同时执行的线程保持在只有一条的情况。这样一来，就能保护住实例的安全性。<center><br><img src="http://ww3.sinaimg.cn/large/8ee2f43bgw1f9zj78oqz8j20a609swem" width="200" height="100"/><br></center>
-
-</li>
-</ul>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/11/21/java多线程设计模式/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
         <time datetime="2016-11-18T02:00:14.000Z"><a href="/blog/2016/11/18/机器学习概述/">2016-11-18</a></time>
       
       
@@ -176,7 +358,7 @@
 
     </header>
     <div class="entry">
-      
+         <!--01-->
         <h2 id="一、机器学习使用场景"><a href="#一、机器学习使用场景" class="headerlink" title="一、机器学习使用场景"></a>一、机器学习使用场景</h2><p>想入门机器学习的同学，经常会去看一些入门书，比如《集体智慧编程》、《机器学习实战》、《数据挖掘》、《推荐系统实践》等。看书的过程中，经常性的会看到如下样例：</p>
 <ul>
 <li>垃圾邮件识别</li>
@@ -227,7 +409,7 @@
 
     </header>
     <div class="entry">
-      
+         <!--01-->
         <h3 id="数据结构操作"><a href="#数据结构操作" class="headerlink" title="数据结构操作"></a>数据结构操作</h3><p><img src="http://img.mp.itc.cn/upload/20161116/87c175af9472490db47cc38cddb39be7_th.png" alt=""></p>
       
     </div>
@@ -250,50 +432,11 @@
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-11-06T14:10:34.000Z"><a href="/blog/2016/11/06/一篇文看懂Hadoop：风雨十年，未来何去何从/">2016-11-06</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/11/06/一篇文看懂Hadoop：风雨十年，未来何去何从/">一篇文看懂Hadoop：风雨十年，未来何去何从</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>本文分为技术篇、产业篇、应用篇、展望篇四部分</p>
-<h2 id="技术篇"><a href="#技术篇" class="headerlink" title="技术篇"></a>技术篇</h2><p><img src="http://images2015.cnblogs.com/blog/822054/201603/822054-20160317142523662-242697012.png" alt=""></p>
-<p>2006年项目成立的一开始，“Hadoop”这个单词只代表了两个组件——HDFS和MapReduce。到现在的10个年头，这个单词代表的是“核心”（即Core Hadoop项目）以及与之相关的一个不断成长的生态系统。这个和Linux非常类似，都是由一个核心和一个生态系统组成。</p>
-<p>现在Hadoop在一月发布了2.7.2的稳定版，已经从传统的Hadoop三驾马车HDFS，MapReduce和HBase社区发展为60多个相关组件组成的庞大生态，其中包含在各大发行版中的组件就有25个以上，包括数据存储、执行引擎、编程和数据访问框架等。</p>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/11/06/一篇文看懂Hadoop：风雨十年，未来何去何从/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-
 
 <nav id="pagination">
   
+  
+    <a href="/blog/page/2/" class="alignright next">下一页</a>
   
   <div class="clearfix"></div>
 </nav></div></div>
@@ -304,7 +447,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/linux/" style="font-size: 10px;">linux</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 10px;">多线程</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+    <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/linux/" style="font-size: 10px;">linux</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
   </div>
 </div>
 
