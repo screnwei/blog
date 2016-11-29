@@ -23,7 +23,13 @@ hostname
 lspci -tv 
 
 列出所有USB设备　　
-lsusb -tv">
+lsusb -tv 
+
+列出加载的内核模块    
+lsmod 
+
+查看环境变量
+env">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -52,9 +58,11 @@ lsusb -tv">
 <nav id="main-nav" class="alignright">
   <ul>
     
-      <li><a href="/blog/">Home</a></li>
+      <li><a href="/blog//">首页</a></li>
     
-      <li><a href="/blog/archives">Archives</a></li>
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
     
   </ul>
   <div class="clearfix"></div>
@@ -68,7 +76,7 @@ lsusb -tv">
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-11-07T07:41:58.000Z"><a href="/blog/2016/11/07/linux查看系统信息/">2016-11-07</a></time>
+        <time datetime="2016-11-24T08:27:52.000Z"><a href="/blog/2016/11/24/linux查看系统信息/">2016-11-24</a></time>
       
       
   
@@ -104,6 +112,7 @@ lsusb -tv">
 <pre><code>env 
 </code></pre></li>
 </ul>
+<a id="more"></a>
 <h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ul>
 <li><p>查看内存使用量和交换区使用量</p>
 <pre><code>free -m 
@@ -211,23 +220,43 @@ lsusb -tv">
       
         
         
-        
-  <div class="addthis addthis_toolbox addthis_default_style">
-    
-      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-    
-    
-      <a class="addthis_button_tweet"></a>
-    
-    
-      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-    
-    
-      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
-    
-    <a class="addthis_counter addthis_pill_style"></a>
+  
+  <div class="tags">
+    <a href="/blog/tags/linux/">linux</a>
   </div>
-  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+        <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+    <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+    <a href="#" class="bds_renren" data-cmd="renren"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+</div>
+
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "16"
+        },
+        "share": {},
+        "image": {
+            "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+            "viewText": “分享到",
+            "viewSize": "16"
+        },
+        "selectShare": {
+            "bdContainerClass": null,
+            "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+        }
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
 
       
       <div class="clearfix"></div>
@@ -236,38 +265,49 @@ lsusb -tv">
 </article>
 
 
+
+
+<nav id="pagination" >
+    
+    
+    <a href="/blog/2016/11/21/java多线程设计模式/" class="alignright next" >下一页</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+<!-- 多说评论框 start -->
+ <div class="ds-thread" data-thread-key="/blog/2016/11/24/linux查看系统信息/" data-title="linux查看系统信息" data-url="renwei.github.io/blog/2016/11/24/linux查看系统信息/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"screnwei"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
 <section id="comment">
-  <h1 class="title">留言</h1>
-
-  
-      <div id="fb-root"></div>
-<script>
-  (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
-</script>
-
-<div class="fb-comments" data-href="renwei.github.io/2016/11/07/linux查看系统信息/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
-      
-  
 </section>
+
+
 
 </div></div>
     <aside id="sidebar" class="alignright">
-  <div class="search">
-  <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="搜索">
-    <input type="hidden" name="q" value="site:renwei.github.io">
-  </form>
+  
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/linux/" style="font-size: 10px;">linux</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 10px;">多线程</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+  </div>
 </div>
 
-  
-
-  
 </aside>
     <div class="clearfix"></div>
   </div>
@@ -277,7 +317,7 @@ lsusb -tv">
   
 </div>
 <div class="clearfix"></div></footer>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="/blog/js/jquery.imagesloaded.min.js"></script>
 <script src="/blog/js/gallery.js"></script>
 
@@ -291,6 +331,7 @@ lsusb -tv">
   $('.fancybox').fancybox();
 })(jQuery);
 </script>
+
 
 </body>
 </html>

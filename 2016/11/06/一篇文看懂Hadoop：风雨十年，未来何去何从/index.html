@@ -1,116 +1,76 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
 <head>
   <meta charset="utf-8">
   
   <title>一篇文看懂Hadoop：风雨十年，未来何去何从 | 13计划</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="author" content="任伟">
+  
   <meta name="description" content="本文分为技术篇、产业篇、应用篇、展望篇四部分
 技术篇
 2006年项目成立的一开始，“Hadoop”这个单词只代表了两个组件——HDFS和MapReduce。到现在的10个年头，这个单词代表的是“核心”（即Core Hadoop项目）以及与之相关的一个不断成长的生态系统。这个和Linux非常类似，都是由一个核心和一个生态系统组成。
-现在Hadoop在一月发布了2.7.2的稳定版，已经从传统的Hado">
-<meta property="og:type" content="article">
-<meta property="og:title" content="一篇文看懂Hadoop：风雨十年，未来何去何从">
-<meta property="og:url" content="renwei.github.io/2016/11/06/一篇文看懂Hadoop：风雨十年，未来何去何从/index.html">
-<meta property="og:site_name" content="13计划">
-<meta property="og:description" content="本文分为技术篇、产业篇、应用篇、展望篇四部分
-技术篇
-2006年项目成立的一开始，“Hadoop”这个单词只代表了两个组件——HDFS和MapReduce。到现在的10个年头，这个单词代表的是“核心”（即Core Hadoop项目）以及与之相关的一个不断成长的生态系统。这个和Linux非常类似，都是由一个核心和一个生态系统组成。
-现在Hadoop在一月发布了2.7.2的稳定版，已经从传统的Hado">
-<meta property="og:image" content="http://images2015.cnblogs.com/blog/822054/201603/822054-20160317142523662-242697012.png">
-<meta property="og:image" content="http://images2015.cnblogs.com/blog/822054/201603/822054-20160317142532256-246600524.jpg">
-<meta property="og:image" content="http://images2015.cnblogs.com/blog/822054/201603/822054-20160317142542599-1585173113.png">
-<meta property="og:image" content="http://images2015.cnblogs.com/blog/822054/201603/822054-20160317142611537-1089037234.jpg">
-<meta property="og:image" content="http://images2015.cnblogs.com/blog/822054/201603/822054-20160317142619365-2109846300.png">
-<meta property="og:image" content="http://images2015.cnblogs.com/blog/822054/201603/822054-20160317142625396-537967723.png">
-<meta property="og:image" content="http://images2015.cnblogs.com/blog/822054/201603/822054-20160317142636474-379862422.png">
-<meta property="og:image" content="http://images2015.cnblogs.com/blog/822054/201603/822054-20160317142651037-1951117933.jpg">
-<meta property="og:updated_time" content="2016-11-06T15:14:41.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="一篇文看懂Hadoop：风雨十年，未来何去何从">
-<meta name="twitter:description" content="本文分为技术篇、产业篇、应用篇、展望篇四部分
-技术篇
-2006年项目成立的一开始，“Hadoop”这个单词只代表了两个组件——HDFS和MapReduce。到现在的10个年头，这个单词代表的是“核心”（即Core Hadoop项目）以及与之相关的一个不断成长的生态系统。这个和Linux非常类似，都是由一个核心和一个生态系统组成。
-现在Hadoop在一月发布了2.7.2的稳定版，已经从传统的Hado">
-<meta name="twitter:image" content="http://images2015.cnblogs.com/blog/822054/201603/822054-20160317142523662-242697012.png">
-  
-    <link rel="alternate" href="/atom.xml" title="13计划" type="application/atom+xml">
+现在Hadoop在一月发布了2.7.2的稳定版，已经从传统的Hadoop三驾马车HDFS，MapReduce和HBase社区发展为60多个相关组件组成的庞大生态，其中包含在各大发行版中的组件就有25个以上，包括数据存储、执行引擎、编程和数据访问框架等。">
   
   
-    <link rel="icon" href="/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="一篇文看懂Hadoop：风雨十年，未来何去何从"/>
+  <meta property="og:site_name" content="13计划"/>
+
   
+    <meta property="og:image" content="undefined"/>
   
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/blog/css/style.css">
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="13计划" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
   
 
 </head>
 
+
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/blog/" id="logo">13计划</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/blog/" id="subtitle">这是我的第一个三年计划。</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/blog/">Home</a>
-        
-          <a class="main-nav-link" href="/blog/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="renwei.github.io"></form>
-      </div>
-    </div>
-  </div>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">13计划</a></h1>
+  <h2><a href="/blog/">这是我的第一个三年计划。</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog//">首页</a></li>
+    
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
 </header>
-      <div class="outer">
-        <section id="main"><article id="post-一篇文看懂Hadoop：风雨十年，未来何去何从" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blog/2016/11/06/一篇文看懂Hadoop：风雨十年，未来何去何从/" class="article-date">
-  <time datetime="2016-11-06T14:10:34.000Z" itemprop="datePublished">2016-11-06</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
   
-    <h1 class="article-title" itemprop="name">
-      一篇文看懂Hadoop：风雨十年，未来何去何从
-    </h1>
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-11-06T14:10:34.000Z"><a href="/blog/2016/11/06/一篇文看懂Hadoop：风雨十年，未来何去何从/">2016-11-06</a></time>
+      
+      
+  
+    <h1 class="title">一篇文看懂Hadoop：风雨十年，未来何去何从</h1>
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
+    </header>
+    <div class="entry">
       
         <p>本文分为技术篇、产业篇、应用篇、展望篇四部分</p>
 <h2 id="技术篇"><a href="#技术篇" class="headerlink" title="技术篇"></a>技术篇</h2><p><img src="http://images2015.cnblogs.com/blog/822054/201603/822054-20160317142523662-242697012.png" alt=""></p>
 <p>2006年项目成立的一开始，“Hadoop”这个单词只代表了两个组件——HDFS和MapReduce。到现在的10个年头，这个单词代表的是“核心”（即Core Hadoop项目）以及与之相关的一个不断成长的生态系统。这个和Linux非常类似，都是由一个核心和一个生态系统组成。</p>
 <p>现在Hadoop在一月发布了2.7.2的稳定版，已经从传统的Hadoop三驾马车HDFS，MapReduce和HBase社区发展为60多个相关组件组成的庞大生态，其中包含在各大发行版中的组件就有25个以上，包括数据存储、执行引擎、编程和数据访问框架等。</p>
+<a id="more"></a>
 <p>Hadoop在2.0将资源管理从MapReduce中独立出来变成通用框架后，就从1.0的三层结构演变为了现在的四层架构：</p>
 <ul>
 <li>底层——存储层，文件系统HDFS<br></li>
@@ -284,115 +244,122 @@
 
       
     </div>
-    <footer class="article-footer">
-      <a data-url="renwei.github.io/blog/2016/11/06/一篇文看懂Hadoop：风雨十年，未来何去何从/" data-id="civvsvqnk0003v5xfck12e4us" class="article-share-link">Share</a>
+    <footer>
       
+        
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/hadoop/">hadoop</a>
+  </div>
+
+        <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+    <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+    <a href="#" class="bds_renren" data-cmd="renren"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+</div>
+
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "16"
+        },
+        "share": {},
+        "image": {
+            "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+            "viewText": “分享到",
+            "viewSize": "16"
+        },
+        "selectShare": {
+            "bdContainerClass": null,
+            "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+        }
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
+
       
+      <div class="clearfix"></div>
     </footer>
   </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/blog/2016/11/07/linux查看系统信息/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          linux查看系统信息
-        
-      </div>
-    </a>
-  
-  
-</nav>
-
-  
 </article>
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">归档</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2016/11/">十一月 2016</a></li></ul>
-    </div>
-  </div>
 
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">最新文章</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/blog/2016/11/21/java多线程设计模式/">JAVA多线程设计模式(一)</a>
-          </li>
-        
-          <li>
-            <a href="/blog/2016/11/18/机器学习概述/">机器学习概述</a>
-          </li>
-        
-          <li>
-            <a href="/blog/2016/11/18/算法复杂度速查表/">算法复杂度速查表</a>
-          </li>
-        
-          <li>
-            <a href="/blog/2016/11/07/linux查看系统信息/">linux查看系统信息</a>
-          </li>
-        
-          <li>
-            <a href="/blog/2016/11/06/一篇文看懂Hadoop：风雨十年，未来何去何从/">一篇文看懂Hadoop：风雨十年，未来何去何从</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
 
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2016 任伟<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/blog/" class="mobile-nav-link">Home</a>
-  
-    <a href="/blog/archives" class="mobile-nav-link">Archives</a>
-  
+<nav id="pagination" >
+    
+    <a href="/blog/2016/11/18/算法复杂度速查表/" class="alignleft prev" >上一页</a>
+    
+    
+    <div class="clearfix"></div>
 </nav>
-    
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<!-- 多说评论框 start -->
+ <div class="ds-thread" data-thread-key="/blog/2016/11/06/一篇文看懂Hadoop：风雨十年，未来何去何从/" data-title="一篇文看懂Hadoop：风雨十年，未来何去何从" data-url="renwei.github.io/blog/2016/11/06/一篇文看懂Hadoop：风雨十年，未来何去何从/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"screnwei"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+<section id="comment">
+</section>
 
 
-  <link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css">
-  <script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
 
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
 
-<script src="/blog/js/script.js"></script>
-
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/linux/" style="font-size: 10px;">linux</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 10px;">多线程</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
   </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2016 任伟
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
 </body>
 </html>
