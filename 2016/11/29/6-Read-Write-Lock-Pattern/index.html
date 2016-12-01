@@ -74,7 +74,7 @@ Reader/Writer Lock
          <!--02-->
         <div id="toc" class="toc-article">
     <div class="toc-title">目录</div>
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#别名"><span class="toc-text">别名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#背景"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题"><span class="toc-text">问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解决方式"><span class="toc-text">解决方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现"><span class="toc-text">实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#相关"><span class="toc-text">相关</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#别名"><span class="toc-text">别名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#背景"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题"><span class="toc-text">问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解决方式"><span class="toc-text">解决方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现"><span class="toc-text">实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#互用"><span class="toc-text">互用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#相关"><span class="toc-text">相关</span></a></li></ol>
 </div>
 
       
@@ -145,7 +145,194 @@ public final class ReadWriteLock {
 }
 </code></pre></li>
 </ul>
-<h3 id="相关"><a href="#相关" class="headerlink" title="相关"></a>相关</h3><ul>
+<h3 id="互用"><a href="#互用" class="headerlink" title="互用"></a>互用</h3><center><br><img src="http://ww3.sinaimg.cn/large/8ee2f43bgw1faa8pcx6blj20wu0y00yp" width="500" height="750"><br></center>
+
+<pre><code>    package org.renwei.pattern.ReadWriteLock.A4.readwritelock;
+
+
+    /**
+     * Created by renwei on 2016/11/30.
+     */
+    public class Data {
+        private final ReadWriteLock lock;
+        private final ReadWriteStrategy readWriteStrategy;
+
+        public Data() {
+            this.lock = new ReadWriteLock(new DefaultGuardStrategy());
+            this.readWriteStrategy = new DefaultReadWriteStrategy();
+        }
+
+        public Data(GuardStrategy guardStrategy) {
+            this.lock = new ReadWriteLock(guardStrategy);
+            this.readWriteStrategy = new DefaultReadWriteStrategy();
+        }
+
+        public Data(ReadWriteStrategy readWriteStrategy) {
+            this.lock = new ReadWriteLock(new DefaultGuardStrategy());
+            this.readWriteStrategy = readWriteStrategy;
+        }
+
+        public Data(GuardStrategy guardStrategy, ReadWriteStrategy readWriteStrategy) {
+            this.lock = new ReadWriteLock(guardStrategy);
+            this.readWriteStrategy = readWriteStrategy;
+        }
+
+        public Object read() throws InterruptedException {
+            lock.readLock();
+            try {
+                return readWriteStrategy.doRead();
+            } finally {
+                lock.readUnlock();
+            }
+        }
+
+        public void write(Object arg) throws InterruptedException {
+            lock.writeLock();
+            try {
+                readWriteStrategy.doWrite(arg);
+            } finally {
+                lock.writeUnlock();
+            }
+        }
+
+        //Inner class
+        private class ReadWriteLock {
+            private final GuardStrategy guardStrategy;
+
+            public ReadWriteLock(GuardStrategy guardStrategy) {
+                this.guardStrategy = guardStrategy;
+            }
+
+            public synchronized void readLock() throws InterruptedException {
+                guardStrategy.beforeReadWait();
+                try {
+                    while (!guardStrategy.readGuard()) {
+                        wait();
+                    }
+
+                } finally {
+                    guardStrategy.afterReadWait();
+                }
+                guardStrategy.beforeDoRead();
+            }
+
+            public synchronized void readUnlock() {
+                guardStrategy.afterDoRead();
+                notifyAll();
+            }
+
+            public synchronized void writeLock() throws InterruptedException {
+                guardStrategy.beforeWriteWait();
+                try {
+                    while (!guardStrategy.writeGuard()) {
+                        wait();
+                    }
+                } finally {
+                    guardStrategy.afterWriteWait();
+                }
+                guardStrategy.beforeDoWrite();
+            }
+
+            public synchronized void writeUnlock() {
+                guardStrategy.afterDoWrite();
+                notifyAll();
+            }
+        }
+
+
+        //Inner class
+        private class DefaultGuardStrategy implements GuardStrategy {
+
+            private int readingReaders = 0; //实际正在读取的线程数
+            private int waitingWriters = 0; //正在等待写入的线程数
+            private int writingWriters = 0; //实际正在写入的线程数
+            private boolean preferWriter = true;    //写入优先的话，值为 true
+
+            @Override public void beforeReadWait() {
+                // no operation
+            }
+
+            @Override public boolean readGuard() {
+                return !(writingWriters &gt; 0 || (preferWriter &amp;&amp; waitingWriters &gt; 0));
+            }
+
+            @Override public void afterReadWait() {
+                // no operation
+            }
+
+            @Override public void beforeDoRead() {
+                readingReaders++;
+            }
+
+            @Override public void afterDoRead() {
+                readingReaders--;
+                preferWriter = true;
+            }
+
+            @Override public void beforeWriteWait() {
+                waitingWriters++;
+
+            }
+
+            @Override public boolean writeGuard() {
+                return !(readingReaders &gt; 0 || writingWriters &gt; 0);
+            }
+
+            @Override public void afterWriteWait() {
+                waitingWriters--;
+            }
+
+            @Override public void beforeDoWrite() {
+                writingWriters++;
+            }
+
+            @Override public void afterDoWrite() {
+                writingWriters--;
+                preferWriter = false;
+            }
+        }
+
+
+        //Inner class
+        private class DefaultReadWriteStrategy implements ReadWriteStrategy {
+            private final char[] buffer;
+
+            public DefaultReadWriteStrategy() {
+                this(10);
+            }
+
+            public DefaultReadWriteStrategy(int size) {
+                this.buffer = new char[size];
+                for (int i = 0; i &lt; buffer.length; i++) {
+                    buffer[i] = &apos;*&apos;;
+                }
+
+            }
+
+            @Override public Object doRead() throws InterruptedException {
+                char[] newbuf = new char[buffer.length];
+                for (int i = 0; i &lt; buffer.length; i++) {
+                    newbuf[i] = buffer[i];
+                }
+                slowly();
+                return newbuf;
+            }
+
+            @Override public void doWrite(Object arg) throws InterruptedException {
+                char c = ((Character) arg).charValue();
+                for (int i = 0; i &lt; buffer.length; i++) {
+                    buffer[i] = c;
+                    slowly();
+                }
+
+            }
+
+            private void slowly() throws InterruptedException {
+                Thread.sleep(50);
+        }
+    }
+}
+</code></pre><h3 id="相关"><a href="#相关" class="headerlink" title="相关"></a>相关</h3><ul>
 <li>Read-Write Lock Pattern中，ReadWriterLock参与者进行共享互斥的地方，用到了Guarded Suspension Pattern；</li>
 <li>完全没有Writer参与者的时候，可以使用 ImmutablePattern；</li>
 </ul>
@@ -204,6 +391,8 @@ public final class ReadWriteLock {
 
 
 <nav id="pagination" >
+    
+    <a href="/blog/2016/11/30/7-Thread-Per-Message-Pattern/" class="alignleft prev" >上一页</a>
     
     
     <a href="/blog/2016/11/29/5-Producer-Consumer-Pattern/" class="alignright next" >下一页</a>
