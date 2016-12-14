@@ -1,0 +1,314 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>框架 | 十年磨剑</title>
+  <meta name="author" content="任伟">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="十年磨剑"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="十年磨剑" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">十年磨剑</a></h1>
+  <h2><a href="/blog/">十年磨一剑，一朝试锋芒</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog//">首页</a></li>
+    
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+<h2 class="archive-title category">框架</h2>
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:32:16.000Z"><a href="/blog/2016/12/14/5-spring-单元测试/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/14/5-spring-单元测试/">5-spring-单元测试.md</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="1、JUnit4"><a href="#1、JUnit4" class="headerlink" title="1、JUnit4"></a>1、JUnit4</h3><p>JUnit测试用例的完整生命周期要经历一下阶段：类级初始化资源处理，方法级初始化资源处理、执行测试用例中的方法、方法级销毁资源处理、类级销毁资源处理。</p>
+<ul>
+<li>测试方法 @Test</li>
+<li>初始化  @BeforeClass、@AfterClass和@Before、@After</li>
+<li>异常测试 @Test(expected=NullPointerException.class)</li>
+<li>超时测试 @Test(timeout=10)</li>
+<li>assertThat 断言</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/14/5-spring-单元测试/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:31:07.000Z"><a href="/blog/2016/12/14/4-spring-SpringMVC/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/14/4-spring-SpringMVC/">4-spring-SpringMVC.md</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h2 id="Spring-MVC"><a href="#Spring-MVC" class="headerlink" title="Spring MVC"></a>Spring MVC</h2><h3 id="1、Spring-MVC概述"><a href="#1、Spring-MVC概述" class="headerlink" title="1、Spring MVC概述"></a>1、Spring MVC概述</h3><p>Spring MVC框架围绕DispatcherServlet这个核心展开，DispatcherServlet负责截获请求并将其分配给响应的处理器处理。Spring MVC框架包括注解驱动控制器、请求及响应的信息处理、视图解析、本地化解析、上传文件解析、异常处理以及表单标签绑定等内容。</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/14/4-spring-SpringMVC/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:29:40.000Z"><a href="/blog/2016/12/14/3-spring-数据访问/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/14/3-spring-数据访问/">3-spring-数据访问.md</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="1、Spring-对-DAO的支持"><a href="#1、Spring-对-DAO的支持" class="headerlink" title="1、Spring 对 DAO的支持"></a>1、Spring 对 DAO的支持</h3><ul>
+<li>Spring支持目前大多数常用的数据持久化技术，Spring定义了一套面向DAO层的异常体系，并未各种支持的持久化技术提供了异常转换器。这样，我们在设计DAO接口时，就可以抛开具体的实现技术，定义统一的接口。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/14/3-spring-数据访问/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:28:20.000Z"><a href="/blog/2016/12/14/2-spring-AoP/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/14/2-spring-AoP/">2-spring-AoP.md</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="AOP概述"><a href="#AOP概述" class="headerlink" title="AOP概述"></a>AOP概述</h3><ul>
+<li>AOP是OOP的有益补充，他为程序开发提供了一个崭新的思考角度，可以将重复性的横切逻辑抽取到统一的模块中，通过OOP的纵向抽象和AOP的横向抽取，程序才能真正解决复杂性代码问题。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/14/2-spring-AoP/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:24:25.000Z"><a href="/blog/2016/12/14/1-pring-IoC/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/14/1-pring-IoC/">1-pring-IoC</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h2 id="IOC概述"><a href="#IOC概述" class="headerlink" title="IOC概述"></a>IOC概述</h2><ul>
+<li>Spring中IOC的概念，控制反转概念其实包含两个层面的意思，“控制”是接口实现类的选择控制权；而“反转”是指这种选择控制权从调用者转移到外部第三方或容器的手中。</li>
+<li>BeanFactory、ApplicationContext和WebApplicationContext是Spring框架三个最核心的接口，框架中其他大部分的类都围绕他们展开、为他们提供支持和服务。在这些支持类中，Respurce是一个不可忽视的重要接口，框架通过Resource实现了和具体资源的解耦，不论他们位于何种存储介质中，都可以通过相同的实例返回。与Resource配合的另一个接口是ResourceLoader，ResourceLoader采用了策略模式，可以通过传入资源地址的信息，自动选择适合的底层资源实现类，为上层对资源的引用提供极大的便利。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/14/1-pring-IoC/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+
+  <nav id="pagination">
+  
+  
+  <div class="clearfix"></div>
+</nav>
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/categories/多线程/">多线程</a><small>15</small></li>
+  
+    <li><a href="/blog/categories/技巧/">技巧</a><small>2</small></li>
+  
+    <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 18px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 14px;">jvm</a> <a href="/blog/tags/linux/" style="font-size: 12px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/skill/" style="font-size: 12px;">skill</a> <a href="/blog/tags/spring/" style="font-size: 16px;">spring</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/blog/tags/技巧/" style="font-size: 12px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2016 任伟
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

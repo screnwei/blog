@@ -56,6 +56,292 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2016-12-14T08:01:49.000Z"><a href="/blog/2016/12/14/技巧-nginx-反代/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/14/技巧-nginx-反代/">技巧 nginx 反代</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <p>直接上配置文件：</p>
+<p>/etc/nginx/sites-enabled/xx_facade.conf</p>
+<p>nginx在80端口监听  www.test.com、 www.test.com/paidanservice 这两个域名，并把请求转发到server1:8096和 server2:8096</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/14/技巧-nginx-反代/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:52:00.000Z"><a href="/blog/2016/12/14/技巧-用curl测试服务器响应时间/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/14/技巧-用curl测试服务器响应时间/">技巧 用curl测试服务器响应时间</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <p>使用 CURL 度量 Web 站点的响应时间</p>
+<pre><code>curl -o /dev/null -s -w &apos;%{time_connect}:%{time_starttransfer}:%{time_total}\n&apos; &apos;http://kisspeach.com&apos;
+
+.081:0.272:0.779
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/14/技巧-用curl测试服务器响应时间/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:32:16.000Z"><a href="/blog/2016/12/14/5-spring-单元测试/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/14/5-spring-单元测试/">5-spring-单元测试.md</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="1、JUnit4"><a href="#1、JUnit4" class="headerlink" title="1、JUnit4"></a>1、JUnit4</h3><p>JUnit测试用例的完整生命周期要经历一下阶段：类级初始化资源处理，方法级初始化资源处理、执行测试用例中的方法、方法级销毁资源处理、类级销毁资源处理。</p>
+<ul>
+<li>测试方法 @Test</li>
+<li>初始化  @BeforeClass、@AfterClass和@Before、@After</li>
+<li>异常测试 @Test(expected=NullPointerException.class)</li>
+<li>超时测试 @Test(timeout=10)</li>
+<li>assertThat 断言</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/14/5-spring-单元测试/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:31:07.000Z"><a href="/blog/2016/12/14/4-spring-SpringMVC/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/14/4-spring-SpringMVC/">4-spring-SpringMVC.md</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h2 id="Spring-MVC"><a href="#Spring-MVC" class="headerlink" title="Spring MVC"></a>Spring MVC</h2><h3 id="1、Spring-MVC概述"><a href="#1、Spring-MVC概述" class="headerlink" title="1、Spring MVC概述"></a>1、Spring MVC概述</h3><p>Spring MVC框架围绕DispatcherServlet这个核心展开，DispatcherServlet负责截获请求并将其分配给响应的处理器处理。Spring MVC框架包括注解驱动控制器、请求及响应的信息处理、视图解析、本地化解析、上传文件解析、异常处理以及表单标签绑定等内容。</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/14/4-spring-SpringMVC/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:29:40.000Z"><a href="/blog/2016/12/14/3-spring-数据访问/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/14/3-spring-数据访问/">3-spring-数据访问.md</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="1、Spring-对-DAO的支持"><a href="#1、Spring-对-DAO的支持" class="headerlink" title="1、Spring 对 DAO的支持"></a>1、Spring 对 DAO的支持</h3><ul>
+<li>Spring支持目前大多数常用的数据持久化技术，Spring定义了一套面向DAO层的异常体系，并未各种支持的持久化技术提供了异常转换器。这样，我们在设计DAO接口时，就可以抛开具体的实现技术，定义统一的接口。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/14/3-spring-数据访问/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:28:20.000Z"><a href="/blog/2016/12/14/2-spring-AoP/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/14/2-spring-AoP/">2-spring-AoP.md</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="AOP概述"><a href="#AOP概述" class="headerlink" title="AOP概述"></a>AOP概述</h3><ul>
+<li>AOP是OOP的有益补充，他为程序开发提供了一个崭新的思考角度，可以将重复性的横切逻辑抽取到统一的模块中，通过OOP的纵向抽象和AOP的横向抽取，程序才能真正解决复杂性代码问题。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/14/2-spring-AoP/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:24:25.000Z"><a href="/blog/2016/12/14/1-pring-IoC/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/14/1-pring-IoC/">1-pring-IoC</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h2 id="IOC概述"><a href="#IOC概述" class="headerlink" title="IOC概述"></a>IOC概述</h2><ul>
+<li>Spring中IOC的概念，控制反转概念其实包含两个层面的意思，“控制”是接口实现类的选择控制权；而“反转”是指这种选择控制权从调用者转移到外部第三方或容器的手中。</li>
+<li>BeanFactory、ApplicationContext和WebApplicationContext是Spring框架三个最核心的接口，框架中其他大部分的类都围绕他们展开、为他们提供支持和服务。在这些支持类中，Respurce是一个不可忽视的重要接口，框架通过Resource实现了和具体资源的解耦，不论他们位于何种存储介质中，都可以通过相同的实例返回。与Resource配合的另一个接口是ResourceLoader，ResourceLoader采用了策略模式，可以通过传入资源地址的信息，自动选择适合的底层资源实现类，为上层对资源的引用提供极大的便利。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/14/1-pring-IoC/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2016-12-14T03:19:28.000Z"><a href="/blog/2016/12/14/jvm与并发 二/">2016-12-14</a></time>
       
       
@@ -88,297 +374,6 @@
 
 
   
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-13T10:40:36.000Z"><a href="/blog/2016/12/13/jvm与并发 三/">2016-12-13</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/13/jvm与并发 三/">jvm与并发（三）</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--01-->
-        <h2 id="如何安全？"><a href="#如何安全？" class="headerlink" title="如何安全？"></a>如何安全？</h2><h3 id="一、java中的线程安全"><a href="#一、java中的线程安全" class="headerlink" title="一、java中的线程安全"></a>一、java中的线程安全</h3><h4 id="1、线程安全的概念"><a href="#1、线程安全的概念" class="headerlink" title="1、线程安全的概念"></a>1、线程安全的概念</h4><p>当多个线程访问同一个对象时，如果不用考虑这些线程在运行时环境的调度和交替执行，也不需要进行额外的同步，或者在调用方法进行任何其他的协调操作，调用这个对象的行为都可以获得正确的结果，那这个对象是线程安全的。</p>
-<h4 id="2、讨论线程安全的前提"><a href="#2、讨论线程安全的前提" class="headerlink" title="2、讨论线程安全的前提"></a>2、讨论线程安全的前提</h4><p>讨论的线程安全，限定于多个线程之间共享数据访问这个前提，因为如果一段代码不会与其他线程共享数据，那么从线程安全的角度来看，程序是串行执行还是多线程执行对他来说是完全没有区别的。</p>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/12/13/jvm与并发 三/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-13T10:39:49.000Z"><a href="/blog/2016/12/13/jvm与并发 一/">2016-12-13</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/13/jvm与并发 一/">jvm与并发（一）</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--01-->
-        <h2 id="为什么要并发？"><a href="#为什么要并发？" class="headerlink" title="为什么要并发？"></a>为什么要并发？</h2><h3 id="一、计算能力"><a href="#一、计算能力" class="headerlink" title="一、计算能力"></a>一、计算能力</h3><p>计算机的运行速度与他的存储和通信子系统速度的差距太大，可以让同时处理几项任务的手段将处理器的运算能力“压榨”出来。</p>
-<h3 id="二、TPS"><a href="#二、TPS" class="headerlink" title="二、TPS"></a>二、TPS</h3><p>服务器的TPS（一秒内服务器平均能响应的请求总数）与并发能力有非常密切的关系。</p>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/12/13/jvm与并发 一/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-13T02:17:24.000Z"><a href="/blog/2016/12/13/java-web-skills/">2016-12-13</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/13/java-web-skills/">java-web-skills</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--02-->
-        <div id="toc" class="toc-article">
-    <div class="toc-title">目录</div>
-    
-</div>
-
-      
-        <p><img src="http://img.blog.csdn.net/20160624124832828" alt=""></p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-13T02:12:41.000Z"><a href="/blog/2016/12/13/big-data-skills/">2016-12-13</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/13/big-data-skills/">big-data-skills</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--01-->
-        <h3 id="课程大纲"><a href="#课程大纲" class="headerlink" title="课程大纲"></a>课程大纲</h3><p><img src="http://img.blog.csdn.net/20160824100312579" alt=""><br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/12/13/big-data-skills/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-01T12:02:44.000Z"><a href="/blog/2016/12/01/12-Active-Object-Pattern/">2016-12-01</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/01/12-Active-Object-Pattern/">12.Active Object Pattern</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--01-->
-        <h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><ul>
-<li>接受异步消息的主动对象</li>
-<li>Actor</li>
-<li>Concurrent Object</li>
-</ul>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
-<li>这里有送出请求的线程（Client参与者）与实际用来处理的对象（Servant参与者）。可是Servant参与者是假定在单线程环境下运行开发出来的。</li>
-</ul>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/12/01/12-Active-Object-Pattern/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-01T10:33:47.000Z"><a href="/blog/2016/12/01/11-Thread-Speciific-Storage-Pattern/">2016-12-01</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/01/11-Thread-Speciific-Storage-Pattern/">11.Thread-Speciific-Storage-Pattern</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--01-->
-        <h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><ul>
-<li>每个线程的保管箱</li>
-<li>Per-Thread Attribute</li>
-<li>Thread-Specific Data</li>
-<li>Thread-Specific Field</li>
-<li>Thread-Local Storage</li>
-</ul>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
-<li>想要将设定在单线程环境下运行的对象（TSObject参与者），在多线程环境下使用；</li>
-</ul>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/12/01/11-Thread-Speciific-Storage-Pattern/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-01T08:13:48.000Z"><a href="/blog/2016/12/01/10-Two-Phase-Termination-Pattern/">2016-12-01</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/01/10-Two-Phase-Termination-Pattern/">10.Two-Phase Termination Pattern</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--01-->
-        <h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><ul>
-<li>快把玩具收拾好，去睡觉吧</li>
-</ul>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>想要结束运行中的线程；</p>
-<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>从外部忽然结束掉线程，会丧失安全性；</p>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/12/01/10-Two-Phase-Termination-Pattern/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
 
   <nav id="pagination">
   
@@ -396,6 +391,10 @@
   
     <li><a href="/blog/categories/多线程/">多线程</a><small>15</small></li>
   
+    <li><a href="/blog/categories/技巧/">技巧</a><small>2</small></li>
+  
+    <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
+  
   </ul>
 </div>
 
@@ -404,7 +403,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/java/" style="font-size: 10px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 16.67px;">jvm</a> <a href="/blog/tags/linux/" style="font-size: 10px;">linux</a> <a href="/blog/tags/skill/" style="font-size: 13.33px;">skill</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+    <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 18px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 14px;">jvm</a> <a href="/blog/tags/linux/" style="font-size: 12px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/skill/" style="font-size: 12px;">skill</a> <a href="/blog/tags/spring/" style="font-size: 16px;">spring</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/blog/tags/技巧/" style="font-size: 12px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
   </div>
 </div>
 

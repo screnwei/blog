@@ -1,0 +1,247 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>5-spring-单元测试.md | 十年磨剑</title>
+  <meta name="author" content="任伟">
+  
+  <meta name="description" content="1、JUnit4JUnit测试用例的完整生命周期要经历一下阶段：类级初始化资源处理，方法级初始化资源处理、执行测试用例中的方法、方法级销毁资源处理、类级销毁资源处理。
+
+测试方法 @Test
+初始化  @BeforeClass、@AfterClass和@Before、@After
+异常测试 @Test(expected=NullPointerException.class)
+超时测试 @Test(timeout=10)
+assertThat 断言">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="5-spring-单元测试.md"/>
+  <meta property="og:site_name" content="十年磨剑"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="十年磨剑" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">十年磨剑</a></h1>
+  <h2><a href="/blog/">十年磨一剑，一朝试锋芒</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog//">首页</a></li>
+    
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:32:16.000Z"><a href="/blog/2016/12/14/5-spring-单元测试/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title">5-spring-单元测试.md</h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--02-->
+        <div id="toc" class="toc-article">
+    <div class="toc-title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、JUnit4"><span class="toc-text">1、JUnit4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、模拟利器Mockito"><span class="toc-text">2、模拟利器Mockito</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、测试整合之王-Unitils"><span class="toc-text">3、测试整合之王 Unitils</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、-单元测试实际运用"><span class="toc-text">4、 单元测试实际运用</span></a></li></ol>
+</div>
+
+      
+        <h3 id="1、JUnit4"><a href="#1、JUnit4" class="headerlink" title="1、JUnit4"></a>1、JUnit4</h3><p>JUnit测试用例的完整生命周期要经历一下阶段：类级初始化资源处理，方法级初始化资源处理、执行测试用例中的方法、方法级销毁资源处理、类级销毁资源处理。</p>
+<ul>
+<li>测试方法 @Test</li>
+<li>初始化  @BeforeClass、@AfterClass和@Before、@After</li>
+<li>异常测试 @Test(expected=NullPointerException.class)</li>
+<li>超时测试 @Test(timeout=10)</li>
+<li>assertThat 断言</li>
+</ul>
+<a id="more"></a>
+<h3 id="2、模拟利器Mockito"><a href="#2、模拟利器Mockito" class="headerlink" title="2、模拟利器Mockito"></a>2、模拟利器Mockito</h3><ul>
+<li><p>创建Mock对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">//对接口进行模拟</div><div class="line">UserService mockUserService = mock(UserService.class);</div><div class="line">//对类进行模拟</div><div class="line">UserServiceImpl mockUserServiceImpl = mock(UserServiceImpl.class);</div><div class="line">//基于注解的模拟</div><div class="line">@Mock</div><div class="line">User mockUser;</div><div class="line"></div><div class="line">@Before</div><div class="line">public void initMocks()&#123;</div><div class="line">//初始化当前测试类所有@Mock注解模拟对象</div><div class="line"> MockitoAnnotations.initMocks(this);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>设定Mock对象的期望行为及返回值</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">	//模拟方法设定返回值</div><div class="line">when(mockUserService.findUserByUserName(&quot;tom&quot;).thenReturn(new User(&quot;tom&quot;, &quot;1234&quot;));</div><div class="line">	doReturn(true).when(mockServiceImpl).hasMatchUser(&quot;tom&quot;,&quot;1234&quot;);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="3、测试整合之王-Unitils"><a href="#3、测试整合之王-Unitils" class="headerlink" title="3、测试整合之王 Unitils"></a>3、测试整合之王 Unitils</h3><p>Unitils构建在DBUnit与EasyMock项目之上并与JUnit和TestNG相结合，支持数据库测试，支持利用Mock进行测试并提供Spring和Hibernate相集成。Unitils设计成以一种高度可配置和松耦合的方式来添加这些服务到单元测试中。</p>
+<h3 id="4、-单元测试实际运用"><a href="#4、-单元测试实际运用" class="headerlink" title="4、 单元测试实际运用"></a>4、 单元测试实际运用</h3><ul>
+<li><p>对DAO层的测试，结合Untils、DbUnit框架，编写一个支持Excel格式的数据集工厂类，实现使用Excel准备测试所需要的数据及验证数据，从而大大减少测试DAO层工作量。</p>
+</li>
+<li><p>对Service层的测试，采用Junit+Unitils+Mockito组合，运用Mockito强大的模块能力，完成对service层独立性测试，也可以用JUnit+Unitils+Dbunit组合，运用Dbunit强大的数据库维护能力，完成Service层+DAO层集成测试。</p>
+</li>
+<li><p>对Web层的测试，既可以采用JUnit+Unitils+Spring Mock组合，运用Spring Mock模拟依赖于容器的接口实例，如HttpServletRequest、ServletContext等，完成Web层中控器独立性测试；也可以采用JUnit+Unitils+Spring RestTemplate，完成Web层集成测试；还可以采用JUnit+Selenium组合，来模拟真实用户的操作及跨浏览器兼容等测试。</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/blog/categories/框架/">框架</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/java/">java</a>, <a href="/blog/tags/spring/">spring</a>, <a href="/blog/tags/单元测试/">单元测试</a>
+  </div>
+
+        <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+    <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+    <a href="#" class="bds_renren" data-cmd="renren"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+</div>
+
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "16"
+        },
+        "share": {},
+        "image": {
+            "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+            "viewText": “分享到",
+            "viewSize": "16"
+        },
+        "selectShare": {
+            "bdContainerClass": null,
+            "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+        }
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination" >
+    
+    <a href="/blog/2016/12/14/技巧-用curl测试服务器响应时间/" class="alignleft prev" >上一页</a>
+    
+    
+    <a href="/blog/2016/12/14/4-spring-SpringMVC/" class="alignright next" >下一页</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+<!-- 多说评论框 start -->
+ <div class="ds-thread" data-thread-key="/blog/2016/12/14/5-spring-单元测试/" data-title="5-spring-单元测试.md" data-url="renwei.github.io/blog/2016/12/14/5-spring-单元测试/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"screnwei"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+<section id="comment">
+</section>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/categories/多线程/">多线程</a><small>15</small></li>
+  
+    <li><a href="/blog/categories/技巧/">技巧</a><small>2</small></li>
+  
+    <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 18px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 14px;">jvm</a> <a href="/blog/tags/linux/" style="font-size: 12px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/skill/" style="font-size: 12px;">skill</a> <a href="/blog/tags/spring/" style="font-size: 16px;">spring</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/blog/tags/技巧/" style="font-size: 12px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2016 任伟
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>
