@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>jvm与并发（一） | 十年磨剑</title>
+  <meta name="author" content="任伟">
+  
+  <meta name="description" content="为什么要并发？一、计算能力计算机的运行速度与他的存储和通信子系统速度的差距太大，可以让同时处理几项任务的手段将处理器的运算能力“压榨”出来。
+二、TPS服务器的TPS（一秒内服务器平均能响应的请求总数）与并发能力有非常密切的关系。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="jvm与并发（一）"/>
+  <meta property="og:site_name" content="十年磨剑"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="十年磨剑" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">十年磨剑</a></h1>
+  <h2><a href="/blog/">十年磨一剑，一朝试锋芒</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog//">首页</a></li>
+    
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-13T10:39:49.000Z"><a href="/blog/2016/12/13/jvm与并发 一/">2016-12-13</a></time>
+      
+      
+  
+    <h1 class="title">jvm与并发（一）</h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--02-->
+        <div id="toc" class="toc-article">
+    <div class="toc-title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要并发？"><span class="toc-text">为什么要并发？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、计算能力"><span class="toc-text">一、计算能力</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、TPS"><span class="toc-text">二、TPS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何并发？"><span class="toc-text">如何并发？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、硬件效率与一致性"><span class="toc-text">一、硬件效率与一致性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、JMM"><span class="toc-text">二、JMM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、原子性、可见性、有序性"><span class="toc-text">三、原子性、可见性、有序性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、-happens-before"><span class="toc-text">四、 happens-before</span></a></li></ol></li></ol>
+</div>
+
+      
+        <h2 id="为什么要并发？"><a href="#为什么要并发？" class="headerlink" title="为什么要并发？"></a>为什么要并发？</h2><h3 id="一、计算能力"><a href="#一、计算能力" class="headerlink" title="一、计算能力"></a>一、计算能力</h3><p>计算机的运行速度与他的存储和通信子系统速度的差距太大，可以让同时处理几项任务的手段将处理器的运算能力“压榨”出来。</p>
+<h3 id="二、TPS"><a href="#二、TPS" class="headerlink" title="二、TPS"></a>二、TPS</h3><p>服务器的TPS（一秒内服务器平均能响应的请求总数）与并发能力有非常密切的关系。</p>
+<a id="more"></a>
+<h2 id="如何并发？"><a href="#如何并发？" class="headerlink" title="如何并发？"></a>如何并发？</h2><h3 id="一、硬件效率与一致性"><a href="#一、硬件效率与一致性" class="headerlink" title="一、硬件效率与一致性"></a>一、硬件效率与一致性</h3><p>为了“更充分地利用计算机处理器的效能”，所以“让计算机并发执行若干个运算任务”。但是绝大多数的运算任务都不可能只靠处理器“计算”就能完成，至少需要与内存交互。</p>
+<ul>
+<li><p>增加高速缓存<br><br>由于计算机的存储与处理器速度的差距，引入了Cache做为内存与处理器之间的缓冲。但引入了一个新的问题：<em>缓存一致性</em>（在多处理器系统中，每个处理器都有自己的告诉缓存，而他们由共享同一内存）。为了解决一致性的问题，需要各个处理器访问缓存时都遵循一些协议，如MSI、MESI、MOSI等。不同架构的物理机器可以拥有不一样的内存模型，而jvm也有自己的内存模型JMM。</p>
+</li>
+<li><p>指令重排<br><br>为了使得处理器内部的运算单元充分利用，处理器可能会对输入的代码进行乱序执行优化，并在计算后将结果重组，但并<em>不保证各个语句计算的先后顺序与输入代码的顺序一致</em>。JVM的即时编译器中也有类似的指令重排序优化。</p>
+</li>
+</ul>
+<h3 id="二、JMM"><a href="#二、JMM" class="headerlink" title="二、JMM"></a>二、JMM</h3><p>JVM规范中试图定义一种JMM来屏蔽掉各种硬件和操作系统内存访问差异，以实现让Java程序在各中平台下都能达到一致的内存访问效果。</p>
+<center><br><img src="http://ww3.sinaimg.cn/large/8ee2f43bgw1fapbhcxdr0j21040e4jtm" width="400" height="200"><br></center>
+
+<p>JMM中的主内存、工作内存与Java内存区域中的Java堆、栈、方法区等并不是同一个层次的内存划分。如果一定要勉强对应起来，那从变量、主内存、工作内存的定义来看，主内存主要对应Java堆中的对象实例数据部分，而工作内存则对应JVM栈部分。从更底层说，主内存对应物理硬件内存，工作内存对应寄存器和高速缓存。</p>
+<p>JMM定义了8个原子操作以及相应的规则，来实现一个变量如何从主内存拷贝到工作内存、如何从工作内存同步回主内存。</p>
+<ul>
+<li>lock 锁定主内存变量</li>
+<li>unlock 解锁主内存变量</li>
+<li>read 主内存-&gt;工作内存</li>
+<li>load 写入工作内存</li>
+<li>use 工作内存-&gt;执行引擎</li>
+<li>assign 执行引擎-&gt;工作内存</li>
+<li>store 工作内存-&gt;主内存</li>
+<li>write 写入主存</li>
+</ul>
+<p>上述8中基本操作，必须满足如下规则：</p>
+<ul>
+<li>不允许read和load、store和write操作之一单独出现，即不允许一个变量从主内存读取了但工作内存不接受，或者从工作内存发起会写了但主内存不接受的情况出现。</li>
+<li>不允许一个线程丢弃它的最近的assign操作，即变量在工作内存中改变了之后必须把该变化同步回主内存。</li>
+<li>不允许一个线程无原因地（没有发生过任何assign操作）把数据从线程的工作内存同步回主内存中。</li>
+<li>一个新的变量只能在主内存中“诞生”，不允许在工作内存中直接使用一个未被初始化（load或assign）的变量。换句话说，就是对一个变量实施use、store操作之前，必须先执行过了assign操作初始化变量的值。</li>
+<li>如果一个变量事先没有被lock操作锁定，那就不允许对它执行unlock操作，也不允许去unlock一个被其他线程锁定的变量。</li>
+<li>对一个变量执行unlock操作之前，必须先把次变量同步回主内存中（执行store、write操作）。</li>
+</ul>
+<h3 id="三、原子性、可见性、有序性"><a href="#三、原子性、可见性、有序性" class="headerlink" title="三、原子性、可见性、有序性"></a>三、原子性、可见性、有序性</h3><ul>
+<li><p>原子性：一个操作或多个操作要么全部执行完成且执行过程不被中断，要么就不执行。<br><br>在Java中，对基本数据类型的变量的读取和赋值操作是原子性操作，即这些操作是不可被中断，要么执行，要么不执行。对对象类型的变量读取和复制，可以通过 synchronized和Lock实现原子性。</p>
+</li>
+<li><p>可见性：当多个线程同时访问同一个变量时，一个线程修改了这个变量的值，其他线程能够立即看得到修改的值。<br><br>Java提供了volatile关键字保证可见性。当一个共享变量被volatile修饰时，它会保证修改的值立即被其他的线程看到，即修改的值立即更新到主存中，当其他线程需要读取时，它会去内存中读取新值。Synchronized和Lock也可以保证可见性，因为它们可以保证任一时刻只有一个线程能访问共享资源，并在其释放锁之前将修改的变量刷新到内存中。final修饰的变量，在构造器中就初始化完毕。</p>
+</li>
+<li><p>有序性：程序执行的顺序按照代码的先后顺序执行。<br><br>在Java里面，可以通过volatile关键字来保证一定的“有序性”。另外可以通过synchronized和Lock来保证有序性，很显然，synchronized和Lock保证每个时刻是有一个线程执行同步代码，相当于是让线程顺序执行同步代码，自然就保证了有序性。</p>
+</li>
+</ul>
+<h3 id="四、-happens-before"><a href="#四、-happens-before" class="headerlink" title="四、 happens-before"></a>四、 happens-before</h3><p>可以使用 happens-before 原则，判断有序性。<br>“先行发生”原则是判断是否存在竞争、线程是否安全的主要依据。<br>在发生操作B之前，操作A产生的影响能被操作B观察到，“影响”包括修改了内存中共享变量的值、发送了消息、调用了方法等。</p>
+<ul>
+<li>Program Order Rule：在一个线程内，按照程序代码顺序，书写在前面的操作先行发生于书写在后面的操作。准确地说，应该是控制流顺序而不是程序代码顺序，因为要考虑分支、循环结构等。</li>
+<li>Monitor Lock Rule：一个unlock操作先行发生于后面对同一个锁的lock操作。这里必须强调的是同一个锁，而“后面”是指时间上的先后顺序。</li>
+<li>Volatile Variable Rule：对一个volatile变量的写操作先行发生于后面对这个变量的读操作。</li>
+<li>Thread Start Rule：Thread对象的start()方法先行发生于此线程的每一个动作。</li>
+<li>Thread Termination Rule：线程中的所有操作都先行发生于对此线程的终止检测，我们可以通过Thread.join()方法结束、Thread.isAlive(）的返回值等手段检测到线程已经终止执行。</li>
+<li>Thread Interruption Rule：对线程interrupt()方法的调用先行发生于被中断的代码检测到中断事件的发生，可以通过Thread.interrupted()方法检测到是否有中断发生。</li>
+<li>Finalizer Rule：  一个对象的初始化完成（构造函数执行结束）先行发生于它的finalize()方法的开始。</li>
+<li>Transitivity：如果操作A先行发生于操作B，操作B先行发生于操作C，那就可以得出操作A先行发生于操作C的结论。  </li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/blog/categories/多线程/">多线程</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/多线程/">多线程</a>, <a href="/blog/tags/jvm/">jvm</a>
+  </div>
+
+        <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+    <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+    <a href="#" class="bds_renren" data-cmd="renren"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+</div>
+
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "16"
+        },
+        "share": {},
+        "image": {
+            "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+            "viewText": “分享到",
+            "viewSize": "16"
+        },
+        "selectShare": {
+            "bdContainerClass": null,
+            "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+        }
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination" >
+    
+    <a href="/blog/2016/12/13/jvm与并发 三/" class="alignleft prev" >上一页</a>
+    
+    
+    <a href="/blog/2016/12/13/java-web-skills/" class="alignright next" >下一页</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+<!-- 多说评论框 start -->
+ <div class="ds-thread" data-thread-key="/blog/2016/12/13/jvm与并发 一/" data-title="jvm与并发（一）" data-url="renwei.github.io/blog/2016/12/13/jvm与并发 一/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"screnwei"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+<section id="comment">
+</section>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/categories/多线程/">多线程</a><small>15</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/java/" style="font-size: 10px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 16.67px;">jvm</a> <a href="/blog/tags/linux/" style="font-size: 10px;">linux</a> <a href="/blog/tags/skill/" style="font-size: 13.33px;">skill</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2016 任伟
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>
