@@ -1,0 +1,293 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>jvm基本结构 | 十年磨剑</title>
+  <meta name="author" content="任伟">
+  
+  <meta name="description" content="1、JVM基本结构所有的Java开发人员可能会遇到这样的困惑？我该为堆内存设置多大空间呢？OutOfMemoryError的异常到底涉及到运行时数据的哪块区域？该怎么解决呢？其实如果你经常解决服务器性能问题，那么这些问题就会变的非常常见，了解JVM内存也是为了服务器出现性能问题的时候可以快速的了解那块的内存区域出现问题，以便于快速的解决生产故障。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="jvm基本结构"/>
+  <meta property="og:site_name" content="十年磨剑"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="十年磨剑" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">十年磨剑</a></h1>
+  <h2><a href="/blog/">十年磨一剑，一朝试锋芒</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog//">首页</a></li>
+    
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-23T06:10:21.000Z"><a href="/blog/2016/12/23/jvm基本结构/">2016-12-23</a></time>
+      
+      
+  
+    <h1 class="title">jvm基本结构</h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--02-->
+        <div id="toc" class="toc-article">
+    <div class="toc-title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、JVM基本结构"><span class="toc-text">1、JVM基本结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#jvm的内存结构"><span class="toc-text">jvm的内存结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#通过参数来控制各区域的内存大小"><span class="toc-text">通过参数来控制各区域的内存大小</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JVM和系统调用之间的关系"><span class="toc-text">JVM和系统调用之间的关系</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#PC寄存器"><span class="toc-text">PC寄存器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法区"><span class="toc-text">方法区</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Java堆"><span class="toc-text">Java堆</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Java栈"><span class="toc-text">Java栈</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#栈、堆、方法区交互"><span class="toc-text">栈、堆、方法区交互</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、常用JVM配置参数"><span class="toc-text">2、常用JVM配置参数</span></a></li></ol>
+</div>
+
+      
+        <h2 id="1、JVM基本结构"><a href="#1、JVM基本结构" class="headerlink" title="1、JVM基本结构"></a>1、JVM基本结构</h2><p>所有的Java开发人员可能会遇到这样的困惑？我该为堆内存设置多大空间呢？OutOfMemoryError的异常到底涉及到运行时数据的哪块区域？该怎么解决呢？其实如果你经常解决服务器性能问题，那么这些问题就会变的非常常见，了解JVM内存也是为了服务器出现性能问题的时候可以快速的了解那块的内存区域出现问题，以便于快速的解决生产故障。</p>
+<a id="more"></a>
+<h3 id="jvm的内存结构"><a href="#jvm的内存结构" class="headerlink" title="jvm的内存结构"></a>jvm的内存结构</h3><p><img src="http://images2015.cnblogs.com/blog/331425/201606/331425-20160623115838891-809895495.png" alt=""></p>
+<p>JVM内存结构主要有三大块：堆内存、方法区和栈。</p>
+<p>堆内存是JVM中最大的一块由年轻代和老年代组成，而年轻代内存又被分成三部分，Eden空间、From Survivor空间、To Survivor空间,默认情况下年轻代按照8:1:1的比例来分配；</p>
+<p>方法区存储类信息、常量、静态变量等数据，是线程共享的区域，为与Java堆区分，方法区还有一个别名Non-Heap(非堆)；</p>
+<p>栈又分为java虚拟机栈和本地方法栈主要用于方法的执行。</p>
+<h3 id="通过参数来控制各区域的内存大小"><a href="#通过参数来控制各区域的内存大小" class="headerlink" title="通过参数来控制各区域的内存大小"></a>通过参数来控制各区域的内存大小</h3><p><img src="http://images2015.cnblogs.com/blog/331425/201606/331425-20160623115841031-564040608.png" alt=""></p>
+<pre><code>//控制参数
+
+-Xms设置堆的最小空间大小。
+
+-Xmx设置堆的最大空间大小。
+
+-XX:NewSize设置新生代最小空间大小。
+
+-XX:MaxNewSize设置新生代最大空间大小。
+
+-XX:PermSize设置永久代最小空间大小。
+
+-XX:MaxPermSize设置永久代最大空间大小。
+
+-Xss设置每个线程的堆栈大小。
+
+//没有直接设置老年代的参数，但是可以设置堆空间大小和新生代空间大小两个参数来间接控制。    
+老年代空间大小=堆空间大小-年轻代大空间大小
+</code></pre><h3 id="JVM和系统调用之间的关系"><a href="#JVM和系统调用之间的关系" class="headerlink" title="JVM和系统调用之间的关系"></a>JVM和系统调用之间的关系</h3><p><img src="http://images2015.cnblogs.com/blog/331425/201606/331425-20160623115845438-670228585.png" alt=""></p>
+<h4 id="PC寄存器"><a href="#PC寄存器" class="headerlink" title="PC寄存器"></a>PC寄存器</h4><ul>
+<li>每个线程拥有一个PC寄存器</li>
+<li>在线程创建时创建</li>
+<li>指向下一跳指令的地址</li>
+<li>执行本地方法时，PC的值为undefined</li>
+</ul>
+<h4 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h4><ul>
+<li>各个线程共享</li>
+<li>保存装载的类信息<ul>
+<li>已被虚拟机加载的类信息</li>
+<li>常量</li>
+<li>静态变量</li>
+<li>即时编译器编译后的代码</li>
+</ul>
+</li>
+<li>通常和永久区（Perm）关联在一起</li>
+<li>当方法区无法满足内存分配需求时，将抛出OutOfMemoryError异常</li>
+</ul>
+<h4 id="Java堆"><a href="#Java堆" class="headerlink" title="Java堆"></a>Java堆</h4><ul>
+<li>和程序开发密切相关</li>
+<li>应用系统对象都把保存在Java堆中</li>
+<li>所有线程共享Java堆</li>
+<li>对分代GC来说，堆也是分代的</li>
+<li>Java堆中还可以细分为：新生代和老年代；</li>
+<li>再细致一点的有Eden空间、From Survivor空间、To Survivor空间等</li>
+<li>GC的主要工作区间</li>
+<li>堆中没有内存完成实例分配，并且堆也无法再扩展时，将会抛出OutOfMemoryError异常</li>
+</ul>
+<h4 id="Java栈"><a href="#Java栈" class="headerlink" title="Java栈"></a>Java栈</h4><ul>
+<li>线程私有</li>
+<li>栈由一系列帧组成（因此Java栈也叫帧栈）</li>
+<li>帧保存一个方法的局部变量、操作数栈、常量池指针</li>
+<li>每一次方法调用创建一个帧，并压栈</li>
+<li>如果线程请求的栈深度大于虚拟机所允许的深度，将抛出StackOverflowError异常</li>
+<li>如果虚拟机栈可以动态扩展（当前大部分的Java虚拟机都可动态扩展，只不过Java虚拟机规范中也允许固定长度的虚拟机栈），当扩展时无法申请到足够的内存时会抛出OutOfMemoryError异常</li>
+</ul>
+<h4 id="栈、堆、方法区交互"><a href="#栈、堆、方法区交互" class="headerlink" title="栈、堆、方法区交互"></a>栈、堆、方法区交互</h4><p><img src="http://p1.bpimg.com/567571/d0fcad32a589a59f.png" alt=""></p>
+<h2 id="2、常用JVM配置参数"><a href="#2、常用JVM配置参数" class="headerlink" title="2、常用JVM配置参数"></a>2、常用JVM配置参数</h2><ul>
+<li><p>OOM参数</p>
+<pre><code>-XX:+HeapDumpOnOutOfMemoryError OOM时导出堆到文件
+
+-XX:+HeapDumpPath 导出OOM的路径
+
+    //-Xmx20m -Xms5m -XX:+PrintGCDetails -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=oom.dump
+
+-XX:OnOutOfMemoryError 在OOM时，执行一个脚本
+
+    //-XX:OnOutOfMemoryError=&quot;/usr/bin/jstack -F %p &gt; stack.txt&quot;
+</code></pre></li>
+</ul>
+<p><a href="http://www.cnblogs.com/ityouknow/p/5610232.html" target="_blank" rel="external">转自这里</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/blog/categories/jvm/">jvm</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/jvm/">jvm</a>
+  </div>
+
+        <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+    <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+    <a href="#" class="bds_renren" data-cmd="renren"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+</div>
+
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "16"
+        },
+        "share": {},
+        "image": {
+            "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+            "viewText": “分享到",
+            "viewSize": "16"
+        },
+        "selectShare": {
+            "bdContainerClass": null,
+            "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+        }
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination" >
+    
+    <a href="/blog/2016/12/27/jvm-GC算法与垃圾收集器/" class="alignleft prev" >上一页</a>
+    
+    
+    <a href="/blog/2016/12/22/jvm与并发 四/" class="alignright next" >下一页</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+<!-- 多说评论框 start -->
+ <div class="ds-thread" data-thread-key="/blog/2016/12/23/jvm基本结构/" data-title="jvm基本结构" data-url="renwei.github.io/blog/2016/12/23/jvm基本结构/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"screnwei"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+<section id="comment">
+</section>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/categories/jvm/">jvm</a><small>4</small></li>
+  
+    <li><a href="/blog/categories/多线程/">多线程</a><small>16</small></li>
+  
+    <li><a href="/blog/categories/技巧/">技巧</a><small>3</small></li>
+  
+    <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/architecture/" style="font-size: 10px;">architecture</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16.67px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18.33px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/skill/" style="font-size: 13.33px;">skill</a> <a href="/blog/tags/spring/" style="font-size: 15px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/blog/tags/技巧/" style="font-size: 13.33px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 任伟
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

@@ -56,6 +56,122 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2016-12-27T07:16:14.000Z"><a href="/blog/2016/12/27/jvm类加载机制/">2016-12-27</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/27/jvm类加载机制/">jvm类加载机制</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h2 id="1、什么是类的加载"><a href="#1、什么是类的加载" class="headerlink" title="1、什么是类的加载"></a>1、什么是类的加载</h2><p>类的加载指的是将类的.class文件中的二进制数据读入到内存中，将其放在运行时数据区的方法区内，然后在堆区创建一个java.lang.Class对象，用来封装类在方法区内的数据结构。类的加载的最终产品是位于堆区中的Class对象，Class对象封装了类在方法区内的数据结构，并且向Java程序员提供了访问方法区内的数据结构的接口。</p>
+<p><img src="http://images2015.cnblogs.com/blog/331425/201606/331425-20160621125940990-365229277.png" alt=""></p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/27/jvm类加载机制/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-27T02:30:06.000Z"><a href="/blog/2016/12/27/jvm-GC算法与垃圾收集器/">2016-12-27</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/27/jvm-GC算法与垃圾收集器/">jvm GC算法与垃圾收集器</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h2 id="1、概述"><a href="#1、概述" class="headerlink" title="1、概述"></a>1、概述</h2><p>垃圾收集 Garbage Collection 通常被称为“GC”，它诞生于1960年 MIT 的 Lisp 语言，经过半个多世纪，目前已经十分成熟了。</p>
+<p>jvm 中，程序计数器、虚拟机栈、本地方法栈都是随线程而生随线程而灭，栈帧随着方法的进入和退出做入栈和出栈操作，实现了自动的内存清理，因此，我们的<em>内存垃圾回收主要集中于 java堆和方法区中</em>，在程序运行期间，这部分内存的分配和使用都是动态的.</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/27/jvm-GC算法与垃圾收集器/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-23T06:10:21.000Z"><a href="/blog/2016/12/23/jvm基本结构/">2016-12-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/23/jvm基本结构/">jvm基本结构</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h2 id="1、JVM基本结构"><a href="#1、JVM基本结构" class="headerlink" title="1、JVM基本结构"></a>1、JVM基本结构</h2><p>所有的Java开发人员可能会遇到这样的困惑？我该为堆内存设置多大空间呢？OutOfMemoryError的异常到底涉及到运行时数据的哪块区域？该怎么解决呢？其实如果你经常解决服务器性能问题，那么这些问题就会变的非常常见，了解JVM内存也是为了服务器出现性能问题的时候可以快速的了解那块的内存区域出现问题，以便于快速的解决生产故障。</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/23/jvm基本结构/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2016-12-22T03:07:54.000Z"><a href="/blog/2016/12/22/jvm与并发 四/">2016-12-22</a></time>
       
       
@@ -217,9 +333,11 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
+    <li><a href="/blog/categories/jvm/">jvm</a><small>4</small></li>
+  
     <li><a href="/blog/categories/多线程/">多线程</a><small>16</small></li>
   
-    <li><a href="/blog/categories/技巧/">技巧</a><small>2</small></li>
+    <li><a href="/blog/categories/技巧/">技巧</a><small>3</small></li>
   
     <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
   
@@ -231,7 +349,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/architecture/" style="font-size: 10px;">architecture</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 18.33px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/skill/" style="font-size: 13.33px;">skill</a> <a href="/blog/tags/spring/" style="font-size: 16.67px;">spring</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/blog/tags/技巧/" style="font-size: 11.67px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/architecture/" style="font-size: 10px;">architecture</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16.67px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18.33px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/skill/" style="font-size: 13.33px;">skill</a> <a href="/blog/tags/spring/" style="font-size: 15px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/blog/tags/技巧/" style="font-size: 13.33px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
   </div>
 </div>
 
@@ -240,7 +358,7 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2016 任伟
+  &copy; 2017 任伟
   
 </div>
 <div class="clearfix"></div></footer>

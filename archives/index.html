@@ -56,6 +56,198 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2016-12-27T07:16:14.000Z"><a href="/blog/2016/12/27/jvm类加载机制/">2016-12-27</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/27/jvm类加载机制/">jvm类加载机制</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h2 id="1、什么是类的加载"><a href="#1、什么是类的加载" class="headerlink" title="1、什么是类的加载"></a>1、什么是类的加载</h2><p>类的加载指的是将类的.class文件中的二进制数据读入到内存中，将其放在运行时数据区的方法区内，然后在堆区创建一个java.lang.Class对象，用来封装类在方法区内的数据结构。类的加载的最终产品是位于堆区中的Class对象，Class对象封装了类在方法区内的数据结构，并且向Java程序员提供了访问方法区内的数据结构的接口。</p>
+<p><img src="http://images2015.cnblogs.com/blog/331425/201606/331425-20160621125940990-365229277.png" alt=""></p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/27/jvm类加载机制/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-27T07:10:37.000Z"><a href="/blog/2016/12/27/技巧-tomcat服务器优化/">2016-12-27</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/27/技巧-tomcat服务器优化/">技巧-tomcat服务器优化</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h2 id="JVM内存配置优化"><a href="#JVM内存配置优化" class="headerlink" title="JVM内存配置优化"></a>JVM内存配置优化</h2><p>在开发当中，当一个项目比较大时，依赖的jar包通常比较多，我们都知道，在应用服务器启动时，会将应用引用到的所有类通过ClassLoader依次全部加载到内存当中。Java的逻辑内存模型大致分为堆内存、栈内存、静态内存区（也称持久区），该区的内存不会被GC回收。堆内存用于存储类的实例、数组等引用类型数据，也就是用new生成的对象；栈内存存储局部变量（如：方法参数）；静态内存区存储常量、静态变量、类元数据信息（方法、属性等）。开发当中常遇到的三类内存溢出异常：</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/27/技巧-tomcat服务器优化/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-27T06:56:12.000Z"><a href="/blog/2016/12/27/jvm调优/">2016-12-27</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/27/jvm调优/">jvm调优</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>什么是jvm调优呢？jvm调优就是根据gc日志分析jvm内存分配、回收的情况来调整各区域内存比例或者gc回收的策略；更深一层就是根据dump出来的内存结构和线程栈来分析代码中不合理的地方给予改进。</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/27/jvm调优/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-27T02:30:06.000Z"><a href="/blog/2016/12/27/jvm-GC算法与垃圾收集器/">2016-12-27</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/27/jvm-GC算法与垃圾收集器/">jvm GC算法与垃圾收集器</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h2 id="1、概述"><a href="#1、概述" class="headerlink" title="1、概述"></a>1、概述</h2><p>垃圾收集 Garbage Collection 通常被称为“GC”，它诞生于1960年 MIT 的 Lisp 语言，经过半个多世纪，目前已经十分成熟了。</p>
+<p>jvm 中，程序计数器、虚拟机栈、本地方法栈都是随线程而生随线程而灭，栈帧随着方法的进入和退出做入栈和出栈操作，实现了自动的内存清理，因此，我们的<em>内存垃圾回收主要集中于 java堆和方法区中</em>，在程序运行期间，这部分内存的分配和使用都是动态的.</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/27/jvm-GC算法与垃圾收集器/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-23T06:10:21.000Z"><a href="/blog/2016/12/23/jvm基本结构/">2016-12-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/12/23/jvm基本结构/">jvm基本结构</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h2 id="1、JVM基本结构"><a href="#1、JVM基本结构" class="headerlink" title="1、JVM基本结构"></a>1、JVM基本结构</h2><p>所有的Java开发人员可能会遇到这样的困惑？我该为堆内存设置多大空间呢？OutOfMemoryError的异常到底涉及到运行时数据的哪块区域？该怎么解决呢？其实如果你经常解决服务器性能问题，那么这些问题就会变的非常常见，了解JVM内存也是为了服务器出现性能问题的时候可以快速的了解那块的内存区域出现问题，以便于快速的解决生产故障。</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/12/23/jvm基本结构/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2016-12-22T03:07:54.000Z"><a href="/blog/2016/12/22/jvm与并发 四/">2016-12-22</a></time>
       
       
@@ -166,211 +358,6 @@
 
 
   
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-14T07:52:00.000Z"><a href="/blog/2016/12/14/技巧-用curl测试服务器响应时间/">2016-12-14</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/14/技巧-用curl测试服务器响应时间/">技巧 用curl测试服务器响应时间</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--01-->
-        <p>使用 CURL 度量 Web 站点的响应时间</p>
-<pre><code>curl -o /dev/null -s -w &apos;%{time_connect}:%{time_starttransfer}:%{time_total}\n&apos; &apos;http://kisspeach.com&apos;
-
-.081:0.272:0.779
-</code></pre>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/12/14/技巧-用curl测试服务器响应时间/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-14T07:32:16.000Z"><a href="/blog/2016/12/14/5-spring-单元测试/">2016-12-14</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/14/5-spring-单元测试/">5-spring-单元测试.md</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--01-->
-        <h3 id="1、JUnit4"><a href="#1、JUnit4" class="headerlink" title="1、JUnit4"></a>1、JUnit4</h3><p>JUnit测试用例的完整生命周期要经历一下阶段：类级初始化资源处理，方法级初始化资源处理、执行测试用例中的方法、方法级销毁资源处理、类级销毁资源处理。</p>
-<ul>
-<li>测试方法 @Test</li>
-<li>初始化  @BeforeClass、@AfterClass和@Before、@After</li>
-<li>异常测试 @Test(expected=NullPointerException.class)</li>
-<li>超时测试 @Test(timeout=10)</li>
-<li>assertThat 断言</li>
-</ul>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/12/14/5-spring-单元测试/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-14T07:31:07.000Z"><a href="/blog/2016/12/14/4-spring-SpringMVC/">2016-12-14</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/14/4-spring-SpringMVC/">4-spring-SpringMVC.md</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--01-->
-        <h2 id="Spring-MVC"><a href="#Spring-MVC" class="headerlink" title="Spring MVC"></a>Spring MVC</h2><h3 id="1、Spring-MVC概述"><a href="#1、Spring-MVC概述" class="headerlink" title="1、Spring MVC概述"></a>1、Spring MVC概述</h3><p>Spring MVC框架围绕DispatcherServlet这个核心展开，DispatcherServlet负责截获请求并将其分配给响应的处理器处理。Spring MVC框架包括注解驱动控制器、请求及响应的信息处理、视图解析、本地化解析、上传文件解析、异常处理以及表单标签绑定等内容。</p>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/12/14/4-spring-SpringMVC/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-14T07:29:40.000Z"><a href="/blog/2016/12/14/3-spring-数据访问/">2016-12-14</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/14/3-spring-数据访问/">3-spring-数据访问.md</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--01-->
-        <h3 id="1、Spring-对-DAO的支持"><a href="#1、Spring-对-DAO的支持" class="headerlink" title="1、Spring 对 DAO的支持"></a>1、Spring 对 DAO的支持</h3><ul>
-<li>Spring支持目前大多数常用的数据持久化技术，Spring定义了一套面向DAO层的异常体系，并未各种支持的持久化技术提供了异常转换器。这样，我们在设计DAO接口时，就可以抛开具体的实现技术，定义统一的接口。</li>
-</ul>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/12/14/3-spring-数据访问/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-14T07:28:20.000Z"><a href="/blog/2016/12/14/2-spring-AoP/">2016-12-14</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/14/2-spring-AoP/">2-spring-AoP.md</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--01-->
-        <h3 id="AOP概述"><a href="#AOP概述" class="headerlink" title="AOP概述"></a>AOP概述</h3><ul>
-<li>AOP是OOP的有益补充，他为程序开发提供了一个崭新的思考角度，可以将重复性的横切逻辑抽取到统一的模块中，通过OOP的纵向抽象和AOP的横向抽取，程序才能真正解决复杂性代码问题。</li>
-</ul>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/12/14/2-spring-AoP/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
 
   <nav id="pagination">
   
@@ -386,9 +373,11 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
+    <li><a href="/blog/categories/jvm/">jvm</a><small>4</small></li>
+  
     <li><a href="/blog/categories/多线程/">多线程</a><small>16</small></li>
   
-    <li><a href="/blog/categories/技巧/">技巧</a><small>2</small></li>
+    <li><a href="/blog/categories/技巧/">技巧</a><small>3</small></li>
   
     <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
   
@@ -400,7 +389,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/architecture/" style="font-size: 10px;">architecture</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 18.33px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/skill/" style="font-size: 13.33px;">skill</a> <a href="/blog/tags/spring/" style="font-size: 16.67px;">spring</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/blog/tags/技巧/" style="font-size: 11.67px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/architecture/" style="font-size: 10px;">architecture</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16.67px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18.33px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/skill/" style="font-size: 13.33px;">skill</a> <a href="/blog/tags/spring/" style="font-size: 15px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/blog/tags/技巧/" style="font-size: 13.33px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
   </div>
 </div>
 
@@ -409,7 +398,7 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2016 任伟
+  &copy; 2017 任伟
   
 </div>
 <div class="clearfix"></div></footer>

@@ -1,0 +1,264 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>技巧-tomcat服务器优化 | 十年磨剑</title>
+  <meta name="author" content="任伟">
+  
+  <meta name="description" content="JVM内存配置优化在开发当中，当一个项目比较大时，依赖的jar包通常比较多，我们都知道，在应用服务器启动时，会将应用引用到的所有类通过ClassLoader依次全部加载到内存当中。Java的逻辑内存模型大致分为堆内存、栈内存、静态内存区（也称持久区），该区的内存不会被GC回收。堆内存用于存储类的实例、数组等引用类型数据，也就是用new生成的对象；栈内存存储局部变量（如：方法参数）；静态内存区存储常量、静态变量、类元数据信息（方法、属性等）。开发当中常遇到的三类内存溢出异常：">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="技巧-tomcat服务器优化"/>
+  <meta property="og:site_name" content="十年磨剑"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="十年磨剑" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">十年磨剑</a></h1>
+  <h2><a href="/blog/">十年磨一剑，一朝试锋芒</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog//">首页</a></li>
+    
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-27T07:10:37.000Z"><a href="/blog/2016/12/27/技巧-tomcat服务器优化/">2016-12-27</a></time>
+      
+      
+  
+    <h1 class="title">技巧-tomcat服务器优化</h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--02-->
+        <div id="toc" class="toc-article">
+    <div class="toc-title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#JVM内存配置优化"><span class="toc-text">JVM内存配置优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#并发配置优化"><span class="toc-text">并发配置优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#管理员配置"><span class="toc-text">管理员配置</span></a></li></ol>
+</div>
+
+      
+        <h2 id="JVM内存配置优化"><a href="#JVM内存配置优化" class="headerlink" title="JVM内存配置优化"></a>JVM内存配置优化</h2><p>在开发当中，当一个项目比较大时，依赖的jar包通常比较多，我们都知道，在应用服务器启动时，会将应用引用到的所有类通过ClassLoader依次全部加载到内存当中。Java的逻辑内存模型大致分为堆内存、栈内存、静态内存区（也称持久区），该区的内存不会被GC回收。堆内存用于存储类的实例、数组等引用类型数据，也就是用new生成的对象；栈内存存储局部变量（如：方法参数）；静态内存区存储常量、静态变量、类元数据信息（方法、属性等）。开发当中常遇到的三类内存溢出异常：</p>
+<a id="more"></a>
+<ul>
+<li><p>java.lang.OutOfMemoryError: Java heap space异常<br>表示堆内存空间满了，如果不是程序逻辑的bug，可能是因为项目中引用的jar比较多，导到内存溢出。JVM默认堆的最小使用内存为物理内存的1/64，最大使用内存为物理内存的1/4，如8G的物理内存，JVM默认堆的最小和最大内存分别为128m和2048m。通过调整JVM的-Xms（初始内存）和-Xmx（最大内存）两个参数加大内存使用限制。</p>
+</li>
+<li><p>java.lang.OutOfMemoryError: PermGen space异常<br>表示静态内存区满了，通常是由于加载的类过多导致。jdk8以下版本通过修改JVM的-XX:PermSize和-XX:MaxPermSize两个参数，限制静态区最小和最大内存范围。jdk8改变了内存模型，将类定义存放到了元数据（MetaspaceSize）空间，而元数据空间是与堆空间共享同一块内存区域的，所以在JDK8以后版本不会存在PermGen space异常了，故不用设置此参数。</p>
+</li>
+<li><p>java.lang.StackOverflowError异常<br>表示栈内存溢出。通常是由于死循环、无限递归导致。</p>
+</li>
+</ul>
+<p>修改Tomcat的内存配置，打开$TOMCAT_HOME/bin/catalina.sh文件（Windows系统是catalina.bat文件），大楖在250行左右，在JAVA_OPTS参数上添加内存参数设置即可。完整的JVM参数设置如下所示：</p>
+<pre><code>JAVA_OPTS=&quot;$JAVA_OPTS -server -Xms2048m -Xmx2048m -XX:PermSize=128m -XX:MaxPermSize=256 -Djava.awt.headless=true&quot;
+</code></pre><p><em>-server参数</em>：表示以服务模式启动，启动速度会稍微慢一点，但性能会高很多。不加这个参数，默认是以客户端模式启动。 </p>
+<p><em>java.awt.headless=true参数</em>：与图形操作有关，适用于Linux系统。如生成验证码，含义是当前使用的是没有安装图安装图形界面的服务器，应用中如果获取系统显示有关参数会抛异常，可通过jmap -heap proccess_id查看设置是否成功。 </p>
+<p><img src="http://img.blog.csdn.net/20160529131604220" alt=""></p>
+<h2 id="并发配置优化"><a href="#并发配置优化" class="headerlink" title="并发配置优化"></a>并发配置优化</h2><p>主要配置Tomcat能处理的请求数，当一个进程的线程数超过500个的话，那么这个进程的运行效率就很低了。表面上看线程越多处理的请求越多，其实过多的线程会占用CPU在不同线程之间切换的资源，导致CPU在每个线程上处理的时间片极期有限，反而会降低服务器的响应性能。</p>
+<pre><code>&lt;Connector port=&quot;8080&quot; protocol=&quot;org.apache.coyote.http11.Http11AprProtocol&quot;
+               connectionTimeout=&quot;20000&quot;
+               redirectPort=&quot;8443&quot; 
+
+                maxThreads=&quot;500&quot;
+                minSpareThreads=&quot;100&quot;
+                maxSpareThreads=&quot;200&quot;
+                acceptCount=&quot;200&quot;
+                maxIdleTime=&quot;30000&quot;
+                enableLookups=&quot;false&quot;
+               /&gt;
+               Tomcat的并发请求处理数量=maxThreads + acceptCount
+
+
+
+    protocol：启用APR连接模式，提高异步IO处理性能。
+    maxThreads：最大能接受的请求数，默认为200 
+    minSpareThreads：最少备用线程数，默认初始化，默认为25 
+    maxSpareThreads：最多备用线程数，一旦创建的线程超过这个值，Tomcat就会关闭不再需要的socket线程 
+    acceptCount：等待处理的请求队列，默认为100，超过队列长度，服务器则拒绝客户端请求，直接返回403 
+    maxIdleTime：如果一个线程在30秒以内没有活跃，则终止运行并从线程池中移除。除非线程池数量小于或等于minSpareThreads数量。默认值是1分钟 
+    enableLookups：如果为true，调用request.getRemoteHost会执行DNS反查，反向解析IP对应的域名或主机，效率较低，建议设为false。 
+</code></pre><p>更多参数设置，请参考：</p>
+<p><a href="http://tomcat.apache.org/tomcat-8.0-doc/config/http.html" target="_blank" rel="external">Tomcat官方文档</a></p>
+<p><a href="http://blog.csdn.net/xyang81/article/details/51502766" target="_blank" rel="external">《开启Tomcat APR运行模式，优化并发性能》 </a></p>
+<h2 id="管理员配置"><a href="#管理员配置" class="headerlink" title="管理员配置"></a>管理员配置</h2><p>Tomcat默认没有配置管理员帐户的权限，如果要查看app的部署状态、通过管理界面deploy或undeploy，则需要在tomcat-user.xml中配置具有管理权限登录的用户。</p>
+<pre><code>&lt;role rolename=&quot;tomcat&quot;/&gt;
+&lt;role rolename=&quot;manager-gui&quot;/&gt;
+&lt;role rolename=&quot;manager-status&quot;/&gt;
+&lt;role rolename=&quot;manager-script&quot;/&gt;
+&lt;role rolename=&quot;manager-jmx&quot;/&gt;
+&lt;user username=&quot;tomcat&quot; password=&quot;tomcat&quot; roles=&quot;tomcat,manager-gui,manager-status,manager-script,manager-jmx&quot;
+</code></pre><p>转自<a href="http://blog.csdn.net/xyang81/article/details/51530979" target="_blank" rel="external">这里</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/blog/categories/技巧/">技巧</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/tomcat/">tomcat</a>, <a href="/blog/tags/技巧/">技巧</a>
+  </div>
+
+        <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+    <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+    <a href="#" class="bds_renren" data-cmd="renren"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+</div>
+
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "16"
+        },
+        "share": {},
+        "image": {
+            "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+            "viewText": “分享到",
+            "viewSize": "16"
+        },
+        "selectShare": {
+            "bdContainerClass": null,
+            "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+        }
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination" >
+    
+    <a href="/blog/2016/12/27/jvm类加载机制/" class="alignleft prev" >上一页</a>
+    
+    
+    <a href="/blog/2016/12/27/jvm调优/" class="alignright next" >下一页</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+<!-- 多说评论框 start -->
+ <div class="ds-thread" data-thread-key="/blog/2016/12/27/技巧-tomcat服务器优化/" data-title="技巧-tomcat服务器优化" data-url="renwei.github.io/blog/2016/12/27/技巧-tomcat服务器优化/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"screnwei"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+<section id="comment">
+</section>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/categories/jvm/">jvm</a><small>4</small></li>
+  
+    <li><a href="/blog/categories/多线程/">多线程</a><small>16</small></li>
+  
+    <li><a href="/blog/categories/技巧/">技巧</a><small>3</small></li>
+  
+    <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/architecture/" style="font-size: 10px;">architecture</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16.67px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18.33px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/skill/" style="font-size: 13.33px;">skill</a> <a href="/blog/tags/spring/" style="font-size: 15px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/blog/tags/技巧/" style="font-size: 13.33px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 任伟
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>
