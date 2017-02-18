@@ -1,0 +1,419 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>flume-ng 案例 1 | 十年磨剑</title>
+  <meta name="author" content="任伟">
+  
+  <meta name="description" content="#flume-ngflume-ng 启动 agent的命令为：
+$ .bin/flume-ng agent -n $agent_name -c ./conf/ -f conf/flume-conf.properties.template -Dflume.root.logger=DEBUG,console">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="flume-ng 案例 1"/>
+  <meta property="og:site_name" content="十年磨剑"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="十年磨剑" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">十年磨剑</a></h1>
+  <h2><a href="/blog/">十年磨一剑，一朝试锋芒</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog//">首页</a></li>
+    
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2017-01-12T06:01:01.000Z"><a href="/blog/2017/01/12/flume-ng-案例-1/">2017-01-12</a></time>
+      
+      
+  
+    <h1 class="title">flume-ng 案例 1</h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--02-->
+        <div id="toc" class="toc-article">
+    <div class="toc-title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Avro"><span class="toc-text">Avro</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spool"><span class="toc-text">Spool</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Exec"><span class="toc-text">Exec</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Syslogtcp"><span class="toc-text">Syslogtcp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JSONHandler"><span class="toc-text">JSONHandler</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hadoop-sink"><span class="toc-text">Hadoop sink</span></a></li></ol>
+</div>
+
+      
+        <p>#flume-ng<br>flume-ng 启动 agent的命令为：</p>
+<pre><code>$ .bin/flume-ng agent -n $agent_name -c ./conf/ -f conf/flume-conf.properties.template -Dflume.root.logger=DEBUG,console
+</code></pre><a id="more"></a>    
+<h2 id="Avro"><a href="#Avro" class="headerlink" title="Avro"></a>Avro</h2><p>Avro可以发送一个给定的文件给Flume，Avro 源使用AVRO RPC机制。</p>
+<ul>
+<li><p>1、创建agent配置文件 conf/avro.conf</p>
+<pre><code># avro.conf: A single-node Flume configuration
+# excute next command in flumeng home dir
+# bin/flume-ng agent --conf conf  --conf-file conf/avro.conf --name agent1 -Dflume.root.logger=INFO,console
+# Name the components on this agent
+agent1.sources = source1
+agent1.sinks = sink1
+agent1.channels = channel1
+
+# Describe/configure source1
+agent1.sources.source1.type = avro
+agent1.sources.source1.bind = localhost
+agent1.sources.source1.port = 44444
+
+# Describe sink1
+agent1.sinks.sink1.type = logger
+
+# Use a channel which buffers events in memory
+agent1.channels.channel1.type = memory
+agent1.channels.channel1.capacity = 1000
+agent1.channels.channel1.transactionCapactiy = 100
+
+# Bind the source and sink to the channel
+agent1.sources.source1.channels = channel1
+agent1.sinks.sink1.channel = channel1
+</code></pre></li>
+<li><p>2、启动flume agent agent1</p>
+<pre><code>./bin/flume-ng agent -c ./conf/ -f ./conf/avro.conf -Dflume.root.logger=DEBUG,console -n agent1
+</code></pre></li>
+<li><p>3、创建指定文件</p>
+<pre><code>echo &quot;hello world&quot; &gt; ./log.00
+</code></pre></li>
+<li><p>4、使用avro-client发送文件</p>
+<pre><code>/bin/flume-ng avro-client -c ./conf -H renwei1 -p 44444 -F ./log.00
+</code></pre></li>
+</ul>
+<h2 id="Spool"><a href="#Spool" class="headerlink" title="Spool"></a>Spool</h2><p>Spool监测配置的目录下新增的文件，并将文件中的数据读取出来。需要注意两点</p>
+<ul>
+<li>拷贝到spool目录下的文件不可以再打开编辑</li>
+<li><p>spool目录下不可包含相应的子目录</p>
+</li>
+<li><p>1、创建agent配置文件 conf/spool.conf</p>
+<pre><code>agent1.sources = source1
+agent1.sinks = sink1
+agent1.channels = channel1
+
+# Describe/configure the source
+agent1.sources.source1.type = spooldir
+agent1.sources.source1.channels = channel1
+agent1.sources.source1.spoolDir = /home/hadoop/apache-flume-1.5.0-bin/logs
+agent1.sources.source1.fileHeader = true
+
+# Describe the sink
+agent1.sinks.sink1.type = logger
+
+# Use a channel which buffers events in memory
+agent1.channels.channel1.type = memory
+agent1.channels.channel1.capacity = 1000
+agent1.channels.channel1.transactionCapacity = 100
+
+# Bind the source and sink to the channel
+agent1.sources.source1.channels = channel1
+agent1.sinks.sink1.channel = channel1
+</code></pre></li>
+<li><p>2、启动flume agent agent1</p>
+<pre><code>./bin/flume-ng agent -c ./conf/ -f ./conf/spool.conf -Dflume.root.logger=DEBUG,console -n agent1
+</code></pre></li>
+<li><p>3、追加文件到 /home/hadoop/apache-flume-1.5.0-bin/logs</p>
+<pre><code>echo &quot;spool test1&quot; &gt; spool.log
+</code></pre></li>
+</ul>
+<h2 id="Exec"><a href="#Exec" class="headerlink" title="Exec"></a>Exec</h2><p>EXEC执行一个给定的命令获得输出的源,如果要使用tail命令，必选使得file足够大才能看到输出内容</p>
+<ul>
+<li><p>1、创建agent配置文件 conf/exec.conf</p>
+<pre><code>agent1.sources = source1
+agent1.sinks = sink1
+agent1.channels = channel1
+
+# Describe/configure the source
+agent1.sources.source1.type = exec
+agent1.sources.source1.channels = channel1
+agent1.sources.source1.command = tail -F /home/hadoop/apache-flume-1.5.0-bin/logs/log_exec_tail
+
+# Describe the sink
+agent1.sinks.sink1.type = logger
+
+# Use a channel which buffers events in memory
+agent1.channels.channel1.type = memory
+agent1.channels.channel1.capacity = 1000
+agent1.channels.channel1.transactionCapacity = 100
+
+# Bind the source and sink to the channel
+agent1.sources.source1.channels = channel1
+agent1.sinks.sink1.channel = channel1
+</code></pre></li>
+<li><p>2、启动flume agent agent1</p>
+<pre><code>./bin/flume-ng agent -c ./conf/ -f ./conf/exec.conf -Dflume.root.logger=DEBUG,console -n agent1
+</code></pre></li>
+<li><p>3、生成足够多的内容在文件里</p>
+</li>
+</ul>
+<h2 id="Syslogtcp"><a href="#Syslogtcp" class="headerlink" title="Syslogtcp"></a>Syslogtcp</h2><p>Syslogtcp监听TCP的端口做为数据源</p>
+<ul>
+<li><p>1、创建agent配置文件 conf/syslogtcp.conf</p>
+<pre><code>agent1.sources = source1
+agent1.sinks = sink1
+agent1.channels = channel1
+
+# Describe/configure the source
+agent1.sources.source1.type = syslogtcp
+agent1.sources.source1.port = 5140
+agent1.sources.source1.host = localhost
+agent1.sources.source1.channels = channel1
+
+# Describe the sink
+agent1.sinks.sink1.type = logger
+
+# Use a channel which buffers events in memory
+agent1.channels.channel1.type = memory
+agent1.channels.channel1.capacity = 1000
+agent1.channels.channel1.transactionCapacity = 100
+
+# Bind the source and sink to the channel
+agent1.sources.source1.channels = channel1
+agent1.sinks.sink1.channel = channel1
+</code></pre></li>
+<li><p>2、启动flume agent agent1</p>
+<pre><code>./bin/flume-ng agent -c ./conf/ -f ./conf/syslogtcp.conf -Dflume.root.logger=DEBUG,console -n agent1
+</code></pre></li>
+<li><p>3、测试生成syslog</p>
+<pre><code>echo &quot;hello idoall.org syslog&quot; | nc localhost 5140
+</code></pre></li>
+</ul>
+<h2 id="JSONHandler"><a href="#JSONHandler" class="headerlink" title="JSONHandler"></a>JSONHandler</h2><ul>
+<li><p>1、创建agent配置文件</p>
+<pre><code>agent1.sources = source1
+agent1.sinks = sink1
+agent1.channels = channel1
+
+# Describe/configure the source
+agent1.sources.source1.type = org.apache.flume.source.http.HTTPSource
+agent1.sources.source1.port = 8888
+agent1.sources.source1.channels = channel1
+
+# Describe the sink
+agent1.sinks.sink1.type = logger
+
+# Use a channel which buffers events in memory
+agent1.channels.channel1.type = memory
+agent1.channels.channel1.capacity = 1000
+agent1.channels.channel1.transactionCapacity = 100
+
+# Bind the source and sink to the channel
+agent1.sources.source1.channels = channel1
+agent1.sinks.sink1.channel = channel1
+</code></pre></li>
+<li><p>2、启动flume agent agent1</p>
+<pre><code>./bin/flume-ng agent -c ./conf/ -f ./conf/JSONHandler.conf -Dflume.root.logger=DEBUG,console -n agent1
+</code></pre></li>
+<li><p>3、生成JSON 格式的POST request    </p>
+<pre><code>curl -X POST -d &apos;[{ &quot;headers&quot; :{&quot;a&quot; : &quot;a1&quot;,&quot;b&quot; : &quot;b1&quot;},&quot;body&quot; : &quot;idoall.org_body&quot;}]&apos; http://localhost:8888
+</code></pre></li>
+</ul>
+<h2 id="Hadoop-sink"><a href="#Hadoop-sink" class="headerlink" title="Hadoop sink"></a>Hadoop sink</h2><ul>
+<li><p>1、创建agent配置文件</p>
+<pre><code># Describe/configure the source
+agent1.sources.source1.type = syslogtcp
+agent1.sources.source1.port = 5140
+agent1.sources.source1.host = localhost
+agent1.sources.source1.channels = channel1
+
+# Describe the sink
+agent1.sinks.sink1.type = hdfs
+agent1.sinks.sink1.channel = channel1
+agent1.sinks.sink1.hdfs.path = hdfs://renwei1:9000/user/flume/syslogtcp
+agent1.sinks.sink1.hdfs.filePrefix = Syslog
+agent1.sinks.sink1.hdfs.round = true
+agent1.sinks.sink1.hdfs.roundValue = 10
+agent1.sinks.sink1.hdfs.roundUnit = minute
+
+# Use a channel which buffers events in memory
+agent1.channels.channel1.type = memory
+agent1.channels.channel1.capacity = 1000
+agent1.channels.channel1.transactionCapacity = 100
+
+# Bind the source and sink to the channel
+agent1.sources.source1.channels = channel1
+agent1.sinks.sink1.channel = channel1
+</code></pre></li>
+<li><p>2、启动flume agent agent1</p>
+<pre><code>./bin/flume-ng agent -c ./conf/ -f ./conf/hdfs_sink.conf -Dflume.root.logger=DEBUG,console -n agent1
+</code></pre></li>
+<li><p>3、测试产生syslog</p>
+<pre><code>echo &quot;hello idoall flume -&gt; hadoop testing one&quot; | nc localhost 5140
+</code></pre></li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/blog/categories/hadoop/">hadoop</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/flume/">flume</a>, <a href="/blog/tags/hadoop/">hadoop</a>
+  </div>
+
+        <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+    <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+    <a href="#" class="bds_renren" data-cmd="renren"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+</div>
+
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "16"
+        },
+        "share": {},
+        "image": {
+            "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+            "viewText": “分享到",
+            "viewSize": "16"
+        },
+        "selectShare": {
+            "bdContainerClass": null,
+            "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+        }
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination" >
+    
+    <a href="/blog/2017/01/12/flume-ng-案例-2/" class="alignleft prev" >上一页</a>
+    
+    
+    <a href="/blog/2016/12/27/jvm类加载机制/" class="alignright next" >下一页</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+<!-- 多说评论框 start -->
+ <div class="ds-thread" data-thread-key="/blog/2017/01/12/flume-ng-案例-1/" data-title="flume-ng 案例 1" data-url="renwei.github.io/blog/2017/01/12/flume-ng-案例-1/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"screnwei"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+<section id="comment">
+</section>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/categories/hadoop/">hadoop</a><small>2</small></li>
+  
+    <li><a href="/blog/categories/jvm/">jvm</a><small>4</small></li>
+  
+    <li><a href="/blog/categories/多线程/">多线程</a><small>16</small></li>
+  
+    <li><a href="/blog/categories/技巧/">技巧</a><small>3</small></li>
+  
+    <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/flume/" style="font-size: 12px;">flume</a> <a href="/blog/tags/hadoop/" style="font-size: 14px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 12px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/spring/" style="font-size: 16px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/技巧/" style="font-size: 14px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 任伟
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

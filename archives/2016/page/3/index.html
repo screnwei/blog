@@ -56,124 +56,6 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-12-13T10:39:49.000Z"><a href="/blog/2016/12/13/jvm与并发 一/">2016-12-13</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/13/jvm与并发 一/">jvm与并发（一）</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--01-->
-        <h2 id="为什么要并发？"><a href="#为什么要并发？" class="headerlink" title="为什么要并发？"></a>为什么要并发？</h2><h3 id="一、计算能力"><a href="#一、计算能力" class="headerlink" title="一、计算能力"></a>一、计算能力</h3><p>计算机的运行速度与他的存储和通信子系统速度的差距太大，可以让同时处理几项任务的手段将处理器的运算能力“压榨”出来。</p>
-<h3 id="二、TPS"><a href="#二、TPS" class="headerlink" title="二、TPS"></a>二、TPS</h3><p>服务器的TPS（一秒内服务器平均能响应的请求总数）与并发能力有非常密切的关系。</p>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/12/13/jvm与并发 一/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-13T02:17:24.000Z"><a href="/blog/2016/12/13/java-web-skills/">2016-12-13</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/13/java-web-skills/">java-web-skills</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--02-->
-        <div id="toc" class="toc-article">
-    <div class="toc-title">目录</div>
-    
-</div>
-
-      
-        <p><img src="http://img.blog.csdn.net/20160624124832828" alt=""></p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-12-13T02:12:41.000Z"><a href="/blog/2016/12/13/big-data-skills/">2016-12-13</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/12/13/big-data-skills/">big-data-skills</a></h1>
-  
-
-    </header>
-    <div class="entry">
-         <!--01-->
-        <h3 id="课程大纲"><a href="#课程大纲" class="headerlink" title="课程大纲"></a>课程大纲</h3><p><img src="http://img.blog.csdn.net/20160824100312579" alt=""><br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/blog/2016/12/13/big-data-skills/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
         <time datetime="2016-12-01T12:02:44.000Z"><a href="/blog/2016/12/01/12-Active-Object-Pattern/">2016-12-01</a></time>
       
       
@@ -394,6 +276,146 @@
 
 
   
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-11-30T09:44:34.000Z"><a href="/blog/2016/11/30/7-Thread-Per-Message-Pattern/">2016-11-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/11/30/7-Thread-Per-Message-Pattern/">7.Thread-Per-Message Pattern</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><ul>
+<li>这个工作交给你了</li>
+</ul>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
+<li>线程（Client参与者）要调用实例（Host参与者）的方法。</li>
+</ul>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>在方法的属性处理完之前，控制权不会从Host参与者退出。如果方法的处理属性很花费时间，程序的响应性会降低。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/11/30/7-Thread-Per-Message-Pattern/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-11-29T09:32:13.000Z"><a href="/blog/2016/11/29/6-Read-Write-Lock-Pattern/">2016-11-29</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/11/29/6-Read-Write-Lock-Pattern/">6.Read-Write Lock Pattern</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><ul>
+<li>大家想看就看吧，不过看的时候不能写喔</li>
+<li>Reader Writer</li>
+<li>Reader/Writer Lock</li>
+</ul>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
+<li>多线程共享一个实例，并有会参考实例状态的线程（Reader参与者），与会改变实例状态的线程（Writer 参与者）。</li>
+</ul>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>若线程之间不进行共享互斥，会丧失安全性。但使用 Single Threaded Execution Pattern会使程序 throughput降低。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/11/29/6-Read-Write-Lock-Pattern/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-11-29T09:13:41.000Z"><a href="/blog/2016/11/29/5-Producer-Consumer-Pattern/">2016-11-29</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/11/29/5-Producer-Consumer-Pattern/">5.Producer-Consumer Pattern</a></h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--01-->
+        <h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><ul>
+<li>我来做，你来用</li>
+</ul>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
+<li>当要从某个线程（Producer参与者）将数据传给其他线程（Consumer参与者）时。</li>
+</ul>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>当Producer参与者与Consumer参与者处理的速度不同时，速度慢的会扯速度快的后腿，而降低程序的 throughput。另外，当Producer参与者要写入数据时，Consumer参与者若同时读取数据，数据会失去安全性。</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/blog/2016/11/29/5-Producer-Consumer-Pattern/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+  
 
   <nav id="pagination">
   
@@ -411,6 +433,8 @@
   <h3 class="title">分类</h3>
   <ul class="entry">
   
+    <li><a href="/blog/categories/hadoop/">hadoop</a><small>2</small></li>
+  
     <li><a href="/blog/categories/jvm/">jvm</a><small>4</small></li>
   
     <li><a href="/blog/categories/多线程/">多线程</a><small>16</small></li>
@@ -427,7 +451,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/architecture/" style="font-size: 10px;">architecture</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/hadoop/" style="font-size: 10px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16.67px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18.33px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/skill/" style="font-size: 13.33px;">skill</a> <a href="/blog/tags/spring/" style="font-size: 15px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/blog/tags/技巧/" style="font-size: 13.33px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/flume/" style="font-size: 12px;">flume</a> <a href="/blog/tags/hadoop/" style="font-size: 14px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 12px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/spring/" style="font-size: 16px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/技巧/" style="font-size: 14px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
   </div>
 </div>
 
