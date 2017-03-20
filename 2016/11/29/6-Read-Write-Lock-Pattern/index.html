@@ -91,7 +91,7 @@ Reader/Writer Lock
 </ul>
 <a id="more"></a>
 <h3 id="解决方式"><a href="#解决方式" class="headerlink" title="解决方式"></a>解决方式</h3><ul>
-<li>首先，将“控制Reader参与者的锁定”与“控制Writer参与者的锁定”分开，加入ReadWriteLock参与者，以提供两种不同的锁定。ReadWriterLock参与者会对“Writer参与者——Writer参与者”、“Reader参与者——Reader参与者”进行互斥控制。因为“Reader参与者——Reader参与者”不会发生冲突，故不会影响安全性，于是不进行共享互斥。这样可以在不影响安全性的前提下提高 throughput。</li>
+<li>首先，将“控制Reader参与者的锁定”与“控制Writer参与者的锁定”分开，加入ReadWriteLock参与者，以提供两种不同的锁定。ReadWriterLock参与者会对“Writer参与者—Writer参与者”、“Reader参与者—Writer参与者”进行互斥控制。因为“Reader参与者—Reader参与者”不会发生冲突，故不会影响安全性，于是不进行共享互斥。这样可以在不影响安全性的前提下提高 throughput。</li>
 </ul>
 <center><br><img src="http://ww3.sinaimg.cn/large/8ee2f43bgw1fa94f75s5pj209s093aa8" width="200" height="100"><br></center>
 

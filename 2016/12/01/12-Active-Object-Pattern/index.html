@@ -85,7 +85,7 @@ Concurrent Object
 </ul>
 <a id="more"></a>
 <h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
-<li>想要以多个Client参与者使用Servant参与者，而Servant参与者又不是线程安。如果Servant参与者处理的操作很花费时间，还会拖垮Client参与者的响应性。</li>
+<li>想要以多个Client参与者使用Servant参与者，而Servant参与者又不是线程安全。如果Servant参与者处理的操作很花费时间，还会拖垮Client参与者的响应性。</li>
 <li>处理的请求顺序与执行顺序不一定一致。</li>
 <li>处理的结果会返回Client参与者。</li>
 </ul>
