@@ -6,7 +6,7 @@
   <title>flume-ng 案例 1 | 十年磨剑</title>
   <meta name="author" content="任伟">
   
-  <meta name="description" content="#flume-ngflume-ng 启动 agent的命令为：
+  <meta name="description" content="flume-ngflume-ng 启动 agent的命令为：
 $ .bin/flume-ng agent -n $agent_name -c ./conf/ -f conf/flume-conf.properties.template -Dflume.root.logger=DEBUG,console">
   
   
@@ -66,11 +66,11 @@ $ .bin/flume-ng agent -n $agent_name -c ./conf/ -f conf/flume-conf.properties.te
          <!--02-->
         <div id="toc" class="toc-article">
     <div class="toc-title">目录</div>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Avro"><span class="toc-text">Avro</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spool"><span class="toc-text">Spool</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Exec"><span class="toc-text">Exec</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Syslogtcp"><span class="toc-text">Syslogtcp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JSONHandler"><span class="toc-text">JSONHandler</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hadoop-sink"><span class="toc-text">Hadoop sink</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#flume-ng"><span class="toc-text">flume-ng</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Avro"><span class="toc-text">Avro</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spool"><span class="toc-text">Spool</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Exec"><span class="toc-text">Exec</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Syslogtcp"><span class="toc-text">Syslogtcp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JSONHandler"><span class="toc-text">JSONHandler</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hadoop-sink"><span class="toc-text">Hadoop sink</span></a></li></ol></li></ol>
 </div>
 
       
-        <p>#flume-ng<br>flume-ng 启动 agent的命令为：</p>
+        <h1 id="flume-ng"><a href="#flume-ng" class="headerlink" title="flume-ng"></a>flume-ng</h1><p>flume-ng 启动 agent的命令为：</p>
 <pre><code>$ .bin/flume-ng agent -n $agent_name -c ./conf/ -f conf/flume-conf.properties.template -Dflume.root.logger=DEBUG,console
 </code></pre><a id="more"></a>    
 <h2 id="Avro"><a href="#Avro" class="headerlink" title="Avro"></a>Avro</h2><p>Avro可以发送一个给定的文件给Flume，Avro 源使用AVRO RPC机制。</p>
