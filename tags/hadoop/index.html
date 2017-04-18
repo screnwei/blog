@@ -65,13 +65,7 @@
 
     </header>
     <div class="entry">
-         <!--02-->
-        <div id="toc" class="toc-article">
-    <div class="toc-title">目录</div>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#File-Roll-Sink"><span class="toc-text">File Roll Sink</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Replicating-Channel-Selector"><span class="toc-text">Replicating Channel Selector</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Multiplexing-Channel-Selector"><span class="toc-text">Multiplexing Channel Selector</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Flume-Sink-Processors"><span class="toc-text">Flume Sink Processors</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Load-balancing-Sink-Processor"><span class="toc-text">Load balancing Sink Processor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hbase-sink"><span class="toc-text">Hbase sink</span></a></li></ol>
-</div>
-
-      
+         <!--01-->
         <h2 id="File-Roll-Sink"><a href="#File-Roll-Sink" class="headerlink" title="File Roll Sink"></a>File Roll Sink</h2><ul>
 <li><p>1、创建agent配置文件</p>
 <pre><code>agent1.sources = source1
@@ -96,157 +90,15 @@ agent1.channels.channel1.transactionCapacity = 100
 agent1.sources.source1.channels = channel1
 agent1.sinks.sink1.channel = channel1
 </code></pre></li>
-<li><p>2、启动flume agent agent1</p>
-<pre><code>./bin/flume-ng agent -c ./conf/ -f ./conf/file_roll.conf -n agent1 -Dflume.root.logger=INFO,console
-</code></pre></li>
-<li><p>3、测试产生log</p>
-<pre><code>echo &quot;hello idoall.org syslog&quot; | nc localhost 5555
-</code></pre></li>
-<li><p>4、查看logs下是否生成文件</p>
-<pre><code>默认每30秒生成一个新文件
-</code></pre></li>
 </ul>
-<h2 id="Replicating-Channel-Selector"><a href="#Replicating-Channel-Selector" class="headerlink" title="Replicating Channel Selector"></a>Replicating Channel Selector</h2><p>Flume支持Fan out流从一个源到多个通道。有两种模式的Fan out，分别是复制和复用。在复制的情况下，流的事件被发送到所有的配置通道。在复用的情况下，事件被发送到可用的渠道中的一个子集。Fan out流需要指定源和Fan out通道的规则。</p>
-<ul>
-<li><p>1、创建agent配置文件</p>
-<pre><code># replicating_Channel_Selector配置文件
-
-agent1.sources = source1
-agent1.sinks = sink1 sinsink2
-agent1.channels = channel1 channel2
-
-# Describe/configure the source
-agent1.sources.source1.type = syslogtcp
-agent1.sources.source1.port = 5140
-agent1.sources.source1.host = localhost
-agent1.sources.source1.selector.type = replicating
-</code></pre></li>
-</ul>
-<pre><code># Describe the sink
-agent1.sinks.sink1.type = avro
-agent1.sinks.sink1.hostname = renwei1
-agent1.sinks.sink1.port = 5555
-agent1.sinks.sink1.channel = channel2
-
-agent1.sinks.sink2.type = avro
-agent1.sinks.sink2.hostname = renwei2
-agent1.sinks.sink2.port = 5555
-agent1.sinks.sink2.channel = channel2
-
-# Use a channel which buffers events in memory
-agent1.channels.channel1.type = memory
-agent1.channels.channel1.capacity = 1000
-agent1.channels.channel1.transactionCapacity = 100
-
-agent1.channels.channel2.type = memory
-agent1.channels.channel2.capacity = 1000
-agent1.channels.channel2.transactionCapacity = 100
-
-# Bind the source and sink to the channel
-agent1.sources.source1.channels = channel1 channel2
-agent1.sinks.sink1.channel = channel1
-
-
-# replicating_Channel_Selector_avro配置文件
-agent1.sources = source1
-agent1.sinks = sink1
-agent1.channels = channel1
-
-# Describe/configure the source
-agent1.sources.source1.type = avro
-agent1.sources.source1.channels = channel1
-agent1.sources.source1.bind = 0.0.0.0
-agent1.sources.source1.port = 5555
-
-# Describe the sink
-agent1.sinks.sink1.type = logger
-
-# Use a channel which buffers events in memory
-agent1.channels.channel1.type = memory
-agent1.channels.channel1.capacity = 1000
-agent1.channels.channel1.transactionCapacity = 100
-
-# Bind the source and sink to the channel
-agent1.sources.source1.channels = channel1
-agent1.sinks.sink1.channel = channel1
-</code></pre><ul>
-<li>2、在renwei1上将2个配置文件复制到renwei2上一份    </li>
-<li><p>3、打开4个窗口，在renwe1、renwei2和m2上同时启动两个flume agent</p>
-<pre><code>./bin/flume-ng agent -c ./conf/ -f ./conf/replicating_Channel_Selector_avro.conf -n agent1 -Dflume.root.logger=INFO,console
-
-./bin/flume-ng agent -c ./conf/ -f ./conf/replicating_Channel_Selector.conf -n agent1 -Dflume.root.logger=INFO,console
-</code></pre></li>
-<li><p>4、在renwei1或renwei2的任意一台机器上，测试产生syslog</p>
-<pre><code>echo &quot;hello world&quot; | nc renwei1 5140
-</code></pre></li>
-<li><p>5、响应信息</p>
-<pre><code>renwei1和renwei2的sink窗口，分别可以看到响应信息,这说明信息得到了同步
-</code></pre></li>
-</ul>
-<h2 id="Multiplexing-Channel-Selector"><a href="#Multiplexing-Channel-Selector" class="headerlink" title="Multiplexing Channel Selector"></a>Multiplexing Channel Selector</h2><pre><code>agent1.sources.r1.selector.header = type
-#映射允许每个值通道可以重叠。默认值可以包含任意数量的通道。
-agent1.sources.source1.selector.mapping.baidu = channel1
-agent1.sources.source1.selector.mapping.ali = channel2
-agent1.sources.source1.selector.default = channel1
-</code></pre><h2 id="Flume-Sink-Processors"><a href="#Flume-Sink-Processors" class="headerlink" title="Flume Sink Processors"></a>Flume Sink Processors</h2><pre><code>#这个是配置failover的关键，需要有一个sink group
-a1.sinkgroups = g1
-a1.sinkgroups.g1.sinks = k1 k2
-#处理的类型是failover
-a1.sinkgroups.g1.processor.type = failover
-#优先级，数字越大优先级越高，每个sink的优先级必须不相同
-a1.sinkgroups.g1.processor.priority.k1 = 5
-a1.sinkgroups.g1.processor.priority.k2 = 10
-#设置为10秒，当然可以根据你的实际状况更改成更快或者很慢
-a1.sinkgroups.g1.processor.maxpenalty = 10000
-</code></pre><h2 id="Load-balancing-Sink-Processor"><a href="#Load-balancing-Sink-Processor" class="headerlink" title="Load balancing Sink Processor"></a>Load balancing Sink Processor</h2><pre><code>#这个是配置Load balancing的关键，需要有一个sink group
-a1.sinkgroups = g1
-a1.sinkgroups.g1.sinks = k1 k2
-a1.sinkgroups.g1.processor.type = load_balance
-a1.sinkgroups.g1.processor.backoff = true
-a1.sinkgroups.g1.processor.selector = round_robin
-</code></pre><h2 id="Hbase-sink"><a href="#Hbase-sink" class="headerlink" title="Hbase sink"></a>Hbase sink</h2><p>注意版本兼容性，apache-flume-1.5.0-bin，hbase-0.98.24-hadoop2</p>
-<ul>
-<li><p>1、创建agent配置文件</p>
-<pre><code>a1.sources = r1
-a1.sinks = k1
-a1.channels = c1
-
-# Describe/configure the source
-a1.sources.r1.type = syslogtcp
-a1.sources.r1.port = 5140
-a1.sources.r1.host = localhost
-a1.sources.r1.channels = c1
-
-# Describe the sink
-a1.sinks.k1.type = hbase
-a1.sinks.k1.table = test_idoall_org
-a1.sinks.k1.columnFamily = name
-a1.sinks.k1.column = idoall
-a1.sinks.k1.serializer =  org.apache.flume.sink.hbase.RegexHbaseEventSerializer
-a1.sinks.k1.zookeeperQuorum =  renwei1:2181,renwei2:2181,renwei3:2181
-a1.sinks.k1.znodeParent =  /hbase
-
-# Use a channel which buffers events in memory
-a1.channels.c1.type = memory
-a1.channels.c1.capacity = 1000
-a1.channels.c1.transactionCapacity = 100
-
-# Bind the source and sink to the channel
-a1.sources.r1.channels = c1
-a1.sinks.k1.channel = c1
-</code></pre></li>
-<li><p>2、启动flume agent agent1</p>
-<pre><code>./bin/flume-ng agent -c ./conf/ -f ./conf/hbase_simple.conf -n agent1 -Dflume.root.logger=INFO,console
-</code></pre></li>
-<li><p>3、测试产生syslog</p>
-<pre><code>echo &quot;hello idoall.org from flume&quot; | nc localhost 5140
-</code></pre></li>
-</ul>
-
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/blog/2017/01/12/flume-ng-案例-2/#more" class="more-link">Read More</a>
+          </div>
         
         
       
@@ -362,6 +214,8 @@ a1.sinks.k1.channel = c1
   
     <li><a href="/blog/categories/技巧/">技巧</a><small>3</small></li>
   
+    <li><a href="/blog/categories/搜索/">搜索</a><small>1</small></li>
+  
     <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
   
   </ul>
@@ -372,7 +226,7 @@ a1.sinks.k1.channel = c1
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/flume/" style="font-size: 12px;">flume</a> <a href="/blog/tags/hadoop/" style="font-size: 14px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 12px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/spring/" style="font-size: 16px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/技巧/" style="font-size: 14px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/flume/" style="font-size: 11.67px;">flume</a> <a href="/blog/tags/hadoop/" style="font-size: 13.33px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16.67px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18.33px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/spring/" style="font-size: 16.67px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/技巧/" style="font-size: 15px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
   </div>
 </div>
 
