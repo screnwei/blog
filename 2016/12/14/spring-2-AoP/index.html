@@ -1,0 +1,242 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>2-spring-AoP | 十年磨剑</title>
+  <meta name="author" content="任伟">
+  
+  <meta name="description" content="AOP概述
+AOP是OOP的有益补充，他为程序开发提供了一个崭新的思考角度，可以将重复性的横切逻辑抽取到统一的模块中，通过OOP的纵向抽象和AOP的横向抽取，程序才能真正解决复杂性代码问题。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="2-spring-AoP"/>
+  <meta property="og:site_name" content="十年磨剑"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="十年磨剑" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">十年磨剑</a></h1>
+  <h2><a href="/blog/">十年磨一剑，一朝试锋芒</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog//">首页</a></li>
+    
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:28:20.000Z"><a href="/blog/2016/12/14/spring-2-AoP/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title">2-spring-AoP</h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--02-->
+        <div id="toc" class="toc-article">
+    <div class="toc-title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP概述"><span class="toc-text">AOP概述</span></a></li></ol>
+</div>
+
+      
+        <h3 id="AOP概述"><a href="#AOP概述" class="headerlink" title="AOP概述"></a>AOP概述</h3><ul>
+<li>AOP是OOP的有益补充，他为程序开发提供了一个崭新的思考角度，可以将重复性的横切逻辑抽取到统一的模块中，通过OOP的纵向抽象和AOP的横向抽取，程序才能真正解决复杂性代码问题。</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li><p>Spring采用JDK动态代理和CGLib动态代理的技术在运行期间植入增强，所以我们不需要装备特殊的编译器或者类装载器就可以使用AOP的功能。要使用JDK动态代理，目标类必须实现接口，而CGLib不对目标类做任何限制，他通过动态生成目标子类的方式提供代理。JDK在创建代理对象时性能高于CGLib，而生成代理对象的运行性能却比CHLIb的低，入股是singleton的代理，我们推荐使用CGLib动态代理。</p>
+</li>
+<li><p>Spring只能在方法级别上植入增强，Spring提供了4中类型的方法增强，分别是前置增强、后置增强、环绕增强和异常抛出增强，此外还有一种特殊的引介增强，引介增强是类级别的，他为目标类织入新的接口实现。从广义上说，增强其实就是一种最简单的切面，他既包括横切代码也包括切点信息，只不过他的切点只是简单的方法相对位置的信息。所以增强一般都需要和切点联合才可以表示一个更具使用性的切面。</p>
+</li>
+<li><p>在Spring中，普通的切点通过目标类名和方法名描述切点的信息。流程切点是比较特殊的切点，他通过方法调用堆栈的运行环境信息来决定连接点。有时，我们需要通过切点的交叉或合并描述一个最终的切点，这时，可以使用ComposablePointcut的复合切点。</p>
+</li>
+<li><p>切面是增强和切点的联合体，我们可以很方便地通过Spring提供的ProxyBeanFactory将切面织入到不同的目标类中。当然，为每一个目标类手工配置一个切面是比较烦琐的，</p>
+</li>
+<li><p>Spring利用BeanPostProcessor可干涉Bean生命周期的机制，提供了一些可以自动创建代理，织入切面的自动代理创建器，其中DefaultAdvisorAutoProxyCreator是功能强大的自动代理创建器，他可以将容器中所有Advisor自动织入到目标Bean中。</p>
+</li>
+<li><p>Spring AOP通过Pointcut（切点）指定在哪些类的哪些方法上织入横切逻辑，通过Advice（增强）描述横切逻辑和方法的具体织入点（方法前、方法后、方法的两端等）。<br>此外，Spring通过Advisor（切面）将Pointcut和Advice两者组装起来。有了Advisor的信息，Spring就可以利用JDK或CGLib的动态代理技术采用统一的方式为目标Bean<br>创建织入切面的代理对象了。</p>
+</li>
+<li><p>使用@AspectJ定义切面比基于接口定义的切面更加直观、更加简洁，成为Spring推荐的切面定义方式。切点表达式语法和切点函数是@AspectJ的重心。</p>
+</li>
+<li><p>如果项目因某种原因无法使用JDK5.0，则可以采用基于Schema配置的方式继续使用AspectJ的切点表达式和增强定义，基于Schema的配置采用<code>&lt;aop:aspect&gt;</code>描述@Aspect类所描述的相同信息，只是换一种方法而已。此外，还可以通过<code>&lt;aop:advisor&gt;</code>复用旧系统已有的Advice并配合使用AspectJ的切点表达式。</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/blog/categories/框架/">框架</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/java/">java</a>, <a href="/blog/tags/spring/">spring</a>, <a href="/blog/tags/aop/">aop</a>
+  </div>
+
+        <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+    <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+    <a href="#" class="bds_renren" data-cmd="renren"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+</div>
+
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "16"
+        },
+        "share": {},
+        "image": {
+            "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+            "viewText": “分享到",
+            "viewSize": "16"
+        },
+        "selectShare": {
+            "bdContainerClass": null,
+            "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+        }
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination" >
+    
+    <a href="/blog/2016/12/14/spring-3-数据访问/" class="alignleft prev" >上一页</a>
+    
+    
+    <a href="/blog/2016/12/14/spring-1-IoC/" class="alignright next" >下一页</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+<!-- 多说评论框 start -->
+ <div class="ds-thread" data-thread-key="/blog/2016/12/14/spring-2-AoP/" data-title="2-spring-AoP" data-url="renwei.github.io/blog/2016/12/14/spring-2-AoP/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"screnwei"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+<section id="comment">
+</section>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/categories/hadoop/">hadoop</a><small>2</small></li>
+  
+    <li><a href="/blog/categories/jvm/">jvm</a><small>4</small></li>
+  
+    <li><a href="/blog/categories/多线程/">多线程</a><small>16</small></li>
+  
+    <li><a href="/blog/categories/技巧/">技巧</a><small>3</small></li>
+  
+    <li><a href="/blog/categories/搜索/">搜索</a><small>1</small></li>
+  
+    <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/flume/" style="font-size: 11.67px;">flume</a> <a href="/blog/tags/hadoop/" style="font-size: 13.33px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16.67px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18.33px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/spring/" style="font-size: 16.67px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/技巧/" style="font-size: 15px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 任伟
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>jvm-2-GC算法与垃圾收集器 | 十年磨剑</title>
+  <meta name="author" content="任伟">
+  
+  <meta name="description" content="1、概述垃圾收集 Garbage Collection 通常被称为“GC”，它诞生于1960年 MIT 的 Lisp 语言，经过半个多世纪，目前已经十分成熟了。
+jvm 中，程序计数器、虚拟机栈、本地方法栈都是随线程而生随线程而灭，栈帧随着方法的进入和退出做入栈和出栈操作，实现了自动的内存清理，因此，我们的内存垃圾回收主要集中于 java堆和方法区中，在程序运行期间，这部分内存的分配和使用都是动态的.">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="jvm-2-GC算法与垃圾收集器"/>
+  <meta property="og:site_name" content="十年磨剑"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="十年磨剑" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">十年磨剑</a></h1>
+  <h2><a href="/blog/">十年磨一剑，一朝试锋芒</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog//">首页</a></li>
+    
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-27T02:30:06.000Z"><a href="/blog/2016/12/27/jvm-2-GC算法与垃圾收集器/">2016-12-27</a></time>
+      
+      
+  
+    <h1 class="title">jvm-2-GC算法与垃圾收集器</h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--02-->
+        <div id="toc" class="toc-article">
+    <div class="toc-title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、概述"><span class="toc-text">1、概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、对象存活判断"><span class="toc-text">2、对象存活判断</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、GC分类"><span class="toc-text">3、GC分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Young-GC（Minor-GC）"><span class="toc-text">Young GC（Minor GC）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Full-GC（Major-GC）"><span class="toc-text">Full GC（Major GC）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4、GC过程"><span class="toc-text">4、GC过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5、垃圾收集算法"><span class="toc-text">5、垃圾收集算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#标记-清除算法"><span class="toc-text">标记 -清除算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#复制算法"><span class="toc-text">复制算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#标记-压缩算法"><span class="toc-text">标记-压缩算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分代收集算法"><span class="toc-text">分代收集算法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6、垃圾收集器"><span class="toc-text">6、垃圾收集器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#串行回收器（Serial-Collector）"><span class="toc-text">串行回收器（Serial Collector）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#并行回收器（Parallel-Collector）"><span class="toc-text">并行回收器（Parallel Collector）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#并行合并回收器-Parallel-Compacting-Collection"><span class="toc-text">并行合并回收器(Parallel Compacting Collection)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#并发标记清除回收器-Concurrent-Mark-Sweep-Collector"><span class="toc-text">并发标记清除回收器(Concurrent Mark-Sweep Collector)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#G1收集器"><span class="toc-text">G1收集器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7、GC参数"><span class="toc-text">7、GC参数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#与串行回收器相关的参数"><span class="toc-text">与串行回收器相关的参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#与并行回收器相关的参数"><span class="toc-text">与并行回收器相关的参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#与CMS回收器相关的参数"><span class="toc-text">与CMS回收器相关的参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#与G1回收器相关的参数"><span class="toc-text">与G1回收器相关的参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TLAB相关"><span class="toc-text">TLAB相关</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8、参考"><span class="toc-text">8、参考</span></a></li></ol>
+</div>
+
+      
+        <h2 id="1、概述"><a href="#1、概述" class="headerlink" title="1、概述"></a>1、概述</h2><p>垃圾收集 Garbage Collection 通常被称为“GC”，它诞生于1960年 MIT 的 Lisp 语言，经过半个多世纪，目前已经十分成熟了。</p>
+<p>jvm 中，程序计数器、虚拟机栈、本地方法栈都是随线程而生随线程而灭，栈帧随着方法的进入和退出做入栈和出栈操作，实现了自动的内存清理，因此，我们的<em>内存垃圾回收主要集中于 java堆和方法区中</em>，在程序运行期间，这部分内存的分配和使用都是动态的.</p>
+<a id="more"></a>
+<h2 id="2、对象存活判断"><a href="#2、对象存活判断" class="headerlink" title="2、对象存活判断"></a>2、对象存活判断</h2><p>判断对象是否存活一般有两种方式：</p>
+<ul>
+<li><p>引用计数：每个对象有一个引用计数属性，新增一个引用时计数加1，引用释放时计数减1，计数为0时可以回收。此方法简单，无法解决对象相互循环引用的问题。</p>
+</li>
+<li><p>可达性分析（Reachability Analysis）：从GC Roots开始向下搜索，搜索所走过的路径称为引用链。当一个对象到GC Roots没有任何引用链相连时，则证明此对象是不可用的。不可达对象。在Java语言中，GC Roots包括：</p>
+<ul>
+<li>虚拟机栈中引用的对象。</li>
+<li>方法区中类静态属性实体引用的对象。</li>
+<li>方法区中常量引用的对象。</li>
+<li>本地方法栈中JNI引用的对象。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3、GC分类"><a href="#3、GC分类" class="headerlink" title="3、GC分类"></a>3、GC分类</h2><h3 id="Young-GC（Minor-GC）"><a href="#Young-GC（Minor-GC）" class="headerlink" title="Young GC（Minor GC）"></a>Young GC（Minor GC）</h3><p>收集生命周期短的区域(Young) </p>
+<ul>
+<li>(1) 清空Eden+from survivor中所有no ref的对象占用的内存 </li>
+<li>(2) 将Eden+from survivor中所有存活的对象copy到to survivor中 </li>
+<li>(3) 一些对象将晋升到old中: to survivor放不下的或存活次数超过turning threshold中的 </li>
+</ul>
+<h3 id="Full-GC（Major-GC）"><a href="#Full-GC（Major-GC）" class="headerlink" title="Full GC（Major GC）"></a>Full GC（Major GC）</h3><p>收集生命周期短的区域(Young)和生命周期比较长的区域(Old)，对整个堆进行垃圾收集，有时也会回收持久区(Perm) </p>
+<ul>
+<li>(1) 清空heap中no ref的对象 </li>
+<li>(2) 清空permgen中已经被卸载的class信息</li>
+</ul>
+<h2 id="4、GC过程"><a href="#4、GC过程" class="headerlink" title="4、GC过程"></a>4、GC过程</h2><ul>
+<li>(1) 新生成的对象在Eden区完成内存分配 </li>
+<li>(2) 当Eden区满，再创建对象，会因为申请不到空间触发YGC，进行young(eden+1survivor)区的垃圾回收（为什么是eden+1survivor：两个survivor中始终有一个survivor是空的，空的那个被标记成To Survivor） </li>
+<li>(3) YGC时，Eden不能被回收的对象被放入到空的survivor（也就是放到To Survivor，此时Eden被清空），另一个survivor（From Survivor）里不能被GC回收的对象也会被放入To Survivor，始终保证一个survivor是空的（YGC完成之后，To Survivor 和 From Survivor的标记互换） </li>
+<li>(4) YGC结束后，若存放对象的survivor满，则这些对象被copy到old区，或者survivor区没有满，但是有些对象已经足够Old（超过XX:MaxTenuringThreshold），也被放入Old区 </li>
+<li>(5) 当Old区被放满的之后，进行完整的垃圾回收，即 FGC </li>
+<li>(6) FGC后，若Survivor及old区仍然无法存放从Eden复制过来的部分对象，导致JVM无法在Eden区为新对象创建内存区域，则出现OOM错误</li>
+</ul>
+<h2 id="5、垃圾收集算法"><a href="#5、垃圾收集算法" class="headerlink" title="5、垃圾收集算法"></a>5、垃圾收集算法</h2><h3 id="标记-清除算法"><a href="#标记-清除算法" class="headerlink" title="标记 -清除算法"></a>标记 -清除算法</h3><p>“标记-清除”（Mark-Sweep）算法，如它的名字一样，算法分为“标记”和“清除”两个阶段：首先标记出所有需要回收的对象，在标记完成后统一回收掉所有被标记的对象。之所以说它是最基础的收集算法，是因为后续的收集算法都是基于这种思路并对其缺点进行改进而得到的。</p>
+<p>它的主要缺点有两个：一个是效率问题，标记和清除过程的效率都不高；另外一个是空间问题，标记清除之后会产生大量不连续的内存碎片，<em>空间碎片太多</em>可能会导致，当程序在以后的运行过程中需要分配较大对象时无法找到足够的连续内存而不得不提前触发另一次垃圾收集动作。</p>
+<p><img src="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174233406-219010809.png" alt=""></p>
+<h3 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h3><p>“复制”（Copying）的收集算法，它将可用内存按容量划分为大小相等的两块，每次只使用其中的一块。当这一块的内存用完了，就将还存活着的对象复制到另外一块上面，然后再把已使用过的内存空间一次清理掉。</p>
+<p>这样使得每次都是对其中的一块进行内存回收，内存分配时也就不用考虑内存碎片等复杂情况，只要移动堆顶指针，按顺序分配内存即可，实现简单，运行高效。只是这种算法的代价是将内存缩小为原来的一半，持续复制长生存期的对象则导致效率降低。<br><img src="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174235125-36263316.png" alt=""></p>
+<h3 id="标记-压缩算法"><a href="#标记-压缩算法" class="headerlink" title="标记-压缩算法"></a>标记-压缩算法</h3><p>复制收集算法在对象存活率较高时就要执行较多的复制操作，效率将会变低。更关键的是，如果不想浪费50%的空间，就需要有额外的空间进行分配担保，以应对被使用的内存中所有对象都100%存活的极端情况，所以在老年代一般不能直接选用这种算法。</p>
+<p>根据老年代的特点，有人提出了另外一种“标记-整理”（Mark-Compact）算法，标记过程仍然与“标记-清除”算法一样，但后续步骤不是直接对可回收对象进行清理，而是让所有存活的对象都向一端移动，然后直接清理掉端边界以外的内存<br><img src="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174238516-890282785.png" alt=""></p>
+<h3 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h3><p><em>GC分代的基本假设：绝大部分对象的生命周期都非常短暂，存活时间短。</em></p>
+<p>“分代收集”（Generational Collection）算法，把Java堆分为<em>新生代</em>和<em>老年代</em>，这样就可以根据各个年代的特点采用最适当的收集算法。在新生代中，每次垃圾收集时都发现有大批对象死去，只有少量存活，那就选用复制算法，只需要付出少量存活对象的复制成本就可以完成收集。而老年代中因为对象存活率高、没有额外空间对它进行分配担保，就必须使用“标记-清理”或“标记-压缩”算法来进行回收。</p>
+<h2 id="6、垃圾收集器"><a href="#6、垃圾收集器" class="headerlink" title="6、垃圾收集器"></a>6、垃圾收集器</h2><p><em>如果说收集算法是内存回收的方法论，垃圾收集器就是内存回收的具体实现</em></p>
+<h3 id="串行回收器（Serial-Collector）"><a href="#串行回收器（Serial-Collector）" class="headerlink" title="串行回收器（Serial Collector）"></a>串行回收器（Serial Collector）</h3><p>单线程执行回收操作，回收期间暂停所有应用线程的执行，client模式下的默认回收器，通过 <em>-XX:+UseSerialGC</em> 命令指定。</p>
+<ul>
+<li><p>年轻代的回收算法（Minor Collection）</p>
+<p>  把Eden区的存活对象移到To区，To区装不下直接移到年老代，把From区的移到To区，To区装不下直接移到年老代，From区里面年龄很大的升级到年老代。 回收结束之后，Eden和From区都为空，此时把From和To的功能互换，From变To，To变From，每一轮回收之前To都是空的。设计的选型为复制。</p>
+</li>
+<li><p>年老代的回收算法（Full Collection）</p>
+<p>  年老代的回收分为三个步骤，标记(Mark)、清除(Sweep)、合并(Compact)。标记阶段把所有存活的对象标记出来，清除阶段释放所有死亡的对象，合并阶段 把所有活着的对象合并到年老代的前部分，把空闲的片段都留到后面。设计的选型为标记压缩，减少内存的碎片。</p>
+</li>
+</ul>
+<h3 id="并行回收器（Parallel-Collector）"><a href="#并行回收器（Parallel-Collector）" class="headerlink" title="并行回收器（Parallel Collector）"></a>并行回收器（Parallel Collector）</h3><p>使用多个线程同时进行垃圾回收，多核环境里面可以充分的利用CPU资源，减少回收时间，增加JVM生产率，Server模式下的默认回收器。与串行回收器相同，回收期间暂停所有应用线程的执行。通过<em>-XX:+UseParallelGC</em>命令行可选项强制指定。</p>
+<ul>
+<li><p>年轻代的回收算法(Minor Collection)</p>
+<p>  使用多个线程回收垃圾，每一个线程的算法与串行回收器相同。</p>
+</li>
+<li><p>年老代的回收算法(Full Collection)</p>
+<p>  年老代依然是单线程的，与串行回收器相同。</p>
+</li>
+</ul>
+<h3 id="并行合并回收器-Parallel-Compacting-Collection"><a href="#并行合并回收器-Parallel-Compacting-Collection" class="headerlink" title="并行合并回收器(Parallel Compacting Collection)"></a>并行合并回收器(Parallel Compacting Collection)</h3><p>年轻代和年老代的回收都是用多线程处理，与串行回收器相同，回收期间暂停所有应用线程的执行。与并行回收器相比，年老代的回收时间更短，从而减少了暂停时间间隔(Pause time)。<br>通过命令可选项<em>-XX:+UseParallelOldGC</em>指定，<em>–XX:ParallelGCThreads=3</em>还可进一步指定参与并行回收的线程数。</p>
+<ul>
+<li><p>年轻代的回收算法(Minor Collection)</p>
+<p>  与并行回收器(Parallel Collector)相同</p>
+</li>
+<li><p>年老代的回收算法(Full Collection) </p>
+<p>  年老代分为三个步骤，标记、统计、合并。这里用到分的思想，把年老代划分为很多个固定大小的区(region)。 标记阶段，把所有存活的对象划分为N组(应该与回收线程数相同)，每一个线程独立的负责自己那一组，标记存活对象的位置以及 所在区(Region)的存活率信息，标记为并行的。统计阶段，统计每一个区(Region)的存活率，原则上靠前面的存活率较高，从前到后， 找到值得合并的开始位置(绝大多数对象都存活的区不值得合并)，统计阶段是串行的(单线程)。合并阶段，依据统计阶段的信息，多线程 并行的把存活的对象从一个区(Region)复制到另外一个区(Region)。</p>
+</li>
+</ul>
+<h3 id="并发标记清除回收器-Concurrent-Mark-Sweep-Collector"><a href="#并发标记清除回收器-Concurrent-Mark-Sweep-Collector" class="headerlink" title="并发标记清除回收器(Concurrent Mark-Sweep Collector)"></a>并发标记清除回收器(Concurrent Mark-Sweep Collector)</h3><p>又名低延时收集器(Low-latency Collector)，通过各种手段使得应用程序被挂起的时间最短。基本与应用程序并发地执行回收操作，没有合并和复制操作。通过命令行<em>-XX:+UseConcMarkSweepGC</em>指定，在单核或者双核系统里面还可以指定使用增量式回收模式<em>-XX:+UseConcMarkSweepGC</em>。增量式回收是指把回收操作分为多个片段，执行一个片段之后释放CPU资源给应用程序，未来的某个时点接着上次的结果继续回收下去。目的也是减少延时。</p>
+<ul>
+<li><p>年轻代的回收算法(Minor Collection)</p>
+<p>  与并行回收器(Parallel Collector)相同</p>
+</li>
+<li><p>年老代的回收算法(Full Collection) </p>
+<p>  分为四个步骤，初始标记(Initial Mark)、并发标记(Concurrent Mark)、再次标记(Remark)、以及并发清理(Concurrent Sweep)。特别注意，没有合并操作，所以会有碎片。</p>
+<p>  初始化阶段: 暂停应用线程，找出所有存活的对象，耗时比较短，回收器使用单线程。</p>
+<p>  并发标记阶段: 回收器标记操作与应用并发运行，回收器使用单线程标记存活对象。</p>
+<p>  再次标记：并发标记阶段由于应用程序也在运行，这个过程中可能新增或者修改对象。所以再次暂停应用线程，找出所有修改的对象，使用多线程标记。</p>
+<p>  并发清理：回收器清理操作与应用并发运行，回收器使用单线程清理死亡对象。</p>
+</li>
+</ul>
+<p><img src="http://images2015.cnblogs.com/blog/331425/201606/331425-20160624174245500-1388590060.png" alt=""></p>
+<pre><code>1.662: [GC [1 CMS-initial-mark: 28122K(49152K)] 29959K(63936K), 0.0046877 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+1.666: [CMS-concurrent-mark-start]
+1.699: [CMS-concurrent-mark: 0.033/0.033 secs] [Times: user=0.25 sys=0.00, real=0.03 secs] 
+1.699: [CMS-concurrent-preclean-start]
+1.700: [CMS-concurrent-preclean: 0.000/0.000 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+1.700: [GC[YG occupancy: 1837 K (14784 K)]1.700: [Rescan (parallel) , 0.0009330 secs]1.701: [weak refs processing, 0.0000180 secs] [1 CMS-remark: 28122K(49152K)] 29959K(63936K), 0.0010248 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+1.702: [CMS-concurrent-sweep-start]
+1.739: [CMS-concurrent-sweep: 0.035/0.037 secs] [Times: user=0.11 sys=0.02, real=0.05 secs] 
+1.739: [CMS-concurrent-reset-start]
+1.741: [CMS-concurrent-reset: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+</code></pre><h3 id="G1收集器"><a href="#G1收集器" class="headerlink" title="G1收集器"></a>G1收集器</h3><p>Garbage-First（G1，垃圾优先）收集器是服务类型的收集器，目标是多处理器机器、大内存机器。它高度符合垃圾收集暂停时间的目标，同时实现高吞吐量。G1和CMS比较有以下特点：</p>
+<p>1、G1收集器采用标记整理算法，不会产生内存空间碎片。分配大对象时不会因为无法找到连续空间而提前触发下一次GC。</p>
+<p>2、G1除了追求低停顿外，还能建立可预测的停顿时间模型，能让使用者明确指定在一个长度为N毫秒的时间片段内，消耗在垃圾收集上的时间不得超过N毫秒</p>
+<ul>
+<li><p>年轻代的回收算法(Minor Collection)</p>
+<p>  堆空间是一块单独的内存空间被分割成多个区域。</p>
+<p>  年轻代内存是由一组非连续的区域组成，这使得需要重调大小变得容易。</p>
+<p>  年轻代垃圾回收是stop the world事件，所有应用线程都会因此操作暂停。</p>
+<p>  年轻代垃圾收集使用多线程并行回收。</p>
+<p>  活跃对象被复制到新的Survivor区或者年老代区域。</p>
+</li>
+<li><p>年老代的回收算法(Full Collection) </p>
+<p>  标记阶段：首先初始标记(Initial-Mark),这个阶段是停顿的(Stop the World Event)，并且会触发一次普通Mintor GC。对应GC log:GC pause (young) (inital-mark)。</p>
+<p>  Root Region Scanning：程序运行过程中会回收survivor区(存活到老年代)，这一过程必须在young GC之前完成。</p>
+<p>  Concurrent Marking：在整个堆中进行并发标记(和应用程序并发执行)，此过程可能被young GC中断。在并发标记阶段，若发现区域对象中的所有对象都是垃圾，那个这个区域会被立即回收(图中打X)。同时，并发标记过程中，会计算每个区域的对象活性(区域中存活对象的比例)。</p>
+<p>  Remark：再标记，会有短暂停顿(STW)。再标记阶段是用来收集 并发标记阶段 产生新的垃圾(并发阶段和应用程序一同运行)；G1中采用了比CMS更快的初始快照算法:snapshot-at-the-beginning (SATB)。</p>
+<p>  Copy/Clean up：多线程清除失活对象，会有STW。G1将回收区域的存活对象拷贝到新区域，清除Remember Sets，并发清空回收区域并把它返回到空闲区域链表中。</p>
+<p>  复制/清除：回收区域的活性对象已经被集中回收到深蓝色和深绿色区域。</p>
+</li>
+</ul>
+<p><a href="http://blog.csdn.net/zhanggang807/article/details/45956325" target="_blank" rel="external">GC算法 垃圾收集器</a></p>
+<h2 id="7、GC参数"><a href="#7、GC参数" class="headerlink" title="7、GC参数"></a>7、GC参数</h2><ul>
+<li><p>Trace 跟踪参数</p>
+<pre><code>-verbose:gc / -XX:+PrintGC  在虚拟机发生内存回收时在输出设备显示信息
+
+-XX:+PrintGCDetails 打印GC详细信息
+
+-XX:+PrintGCTimeStamps 打印CG发生的时间戳
+
+-Xloggc:log/gc.log 指定GC log的位置，以文件输出
+
+-XX:+PrintHeapAtGC 每次一次GC后，都打印堆信息
+
+-XX:+TraceClassLoading 监控类的加载
+
+-XX:+UseSerialGC：在新生代和老年代使用串行收集器
+</code></pre></li>
+<li><p>GC 参数</p>
+<h4 id="与串行回收器相关的参数"><a href="#与串行回收器相关的参数" class="headerlink" title="与串行回收器相关的参数"></a>与串行回收器相关的参数</h4><p>  |command|remark|<br>  |—|—|<br>  |-XX:+UseSerialGC|在新生代和老年代使用串行收集器|<br>  |-XX:SurvivorRatio|设置eden区大小和survivior区大小的比例|<br>  |-XX:PretenureSizeThreshold|设置大对象直接进入老年代的阈值，当对象的大小超过这个值时，将直接在老年代分配|<br>  |-XX:MaxTenuringThreshould|设置大对象进入老年代的年龄的最大值，每一次Minor GC后，对象年龄就加1.任何大于这个年龄的对象，一定会进入老年代。|</p>
+<h4 id="与并行回收器相关的参数"><a href="#与并行回收器相关的参数" class="headerlink" title="与并行回收器相关的参数"></a>与并行回收器相关的参数</h4><p>  |command|remark|<br>  |—|—|<br>  |-XX:+UseParNewGC|在新生代使用并行收集器|<br>  |-XX:+UseParallelOldGC|老年代使用并行回收收集器|<br>  |-XX:ParallelGCThreads|设置用于垃圾回收的线程数，通常情况下可以和CPU数量相等|<br>  |-XX:MaxGCPauseMillis|设置最大垃圾收集停顿时间（值为大于0的整数）|<br>  |-XX:GCTimeRatio|设置吞吐量（值是一个0到100之间的整数），系统将花费不超过1/(1+n)的时间用于垃圾收集|<br>  |-XX:UseAdaptiveSizePolicy|打开自适应GC策略，新生代大小、eden和survivor的比例，晋升老年代的对象年龄等参数会自动调整，以达到在堆大小、吞吐量和停顿时间之间的平衡点|</p>
+<h4 id="与CMS回收器相关的参数"><a href="#与CMS回收器相关的参数" class="headerlink" title="与CMS回收器相关的参数"></a>与CMS回收器相关的参数</h4><p>  |command|remark|<br>  |—|—|<br>  |-XX:+UseConcMarkSweepGC|新生代使用并行收集器，老年代使用CMS+串行收集器|<br>  |-XX:ParallelCMSThreads|设定CMS的线程数量|<br>  |-XX:CMSInitiatingOccupancyFraction|设置CMS收集器在老年代空间被使用多少后触发，默认为68%|<br>  |-XX:+UseCMSCompactAtFullCollection|设置CMS收集器在完成垃圾收集后是否要进行一次内存碎片的整理|<br>  |-XX:CMSFullGCsBeforeCompaction|设定进行多少次CMS垃圾回收后，进行一次内存压缩|<br>  |-XX:+CMSClassUnloadingEnabled|允许对类元数据进行回收|<br>  |-XX:CMSInitiatingPermOccupancyFraction|当永久区占用率达到这一百分比时，启动CMS回收（前提是-XX:+CMSClassUnloadingEnabled激活）<br>  |-XX:UseCMSInitiatingOccupancyOnly|表示只在到达阀值的时候，才进行CMS回收|</p>
+<h4 id="与G1回收器相关的参数"><a href="#与G1回收器相关的参数" class="headerlink" title="与G1回收器相关的参数"></a>与G1回收器相关的参数</h4><p>  |command|remark|<br>  |—|—|<br>  |-XX:UseG1GC|使用G1回收器|<br>  |-XX:MaxGCPauseMillis|设置最大垃圾收集停顿时间|<br>  |-XX:GCPauseIntervalMillis|设置停顿间隔时间|</p>
+<h4 id="TLAB相关"><a href="#TLAB相关" class="headerlink" title="TLAB相关"></a>TLAB相关</h4><p>  |command|remark|<br>  |—|—|<br>  |-XX:+UseTLAB|开启TLAB分配|<br>  |-XX:+PrintTLAB|打印TLAB相关分配信息|<br>  |-XX:+TLABSize|设置TLAB大小|<br>  |+XX:+ResizeTLAB|自动调整TLAB大小|</p>
+</li>
+</ul>
+<h2 id="8、参考"><a href="#8、参考" class="headerlink" title="8、参考"></a>8、参考</h2><p><a href="http://www.cnblogs.com/ityouknow/p/5614961.html" target="_blank" rel="external">http://www.cnblogs.com/ityouknow/p/5614961.html</a></p>
+<p><a href="http://blog.csdn.net/kimylrong/article/details/18265807" target="_blank" rel="external">http://blog.csdn.net/kimylrong/article/details/18265807</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/blog/categories/jvm/">jvm</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/jvm/">jvm</a>, <a href="/blog/tags/GC/">GC</a>
+  </div>
+
+        <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+    <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+    <a href="#" class="bds_renren" data-cmd="renren"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+</div>
+
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "16"
+        },
+        "share": {},
+        "image": {
+            "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+            "viewText": “分享到",
+            "viewSize": "16"
+        },
+        "selectShare": {
+            "bdContainerClass": null,
+            "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+        }
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination" >
+    
+    <a href="/blog/2016/12/27/jvm-3-调优/" class="alignleft prev" >上一页</a>
+    
+    
+    <a href="/blog/2016/12/23/jvm-1-基本结构/" class="alignright next" >下一页</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+<!-- 多说评论框 start -->
+ <div class="ds-thread" data-thread-key="/blog/2016/12/27/jvm-2-GC算法与垃圾收集器/" data-title="jvm-2-GC算法与垃圾收集器" data-url="renwei.github.io/blog/2016/12/27/jvm-2-GC算法与垃圾收集器/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"screnwei"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+<section id="comment">
+</section>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/categories/hadoop/">hadoop</a><small>2</small></li>
+  
+    <li><a href="/blog/categories/jvm/">jvm</a><small>4</small></li>
+  
+    <li><a href="/blog/categories/多线程/">多线程</a><small>16</small></li>
+  
+    <li><a href="/blog/categories/技巧/">技巧</a><small>3</small></li>
+  
+    <li><a href="/blog/categories/搜索/">搜索</a><small>1</small></li>
+  
+    <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/flume/" style="font-size: 11.67px;">flume</a> <a href="/blog/tags/hadoop/" style="font-size: 13.33px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16.67px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18.33px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/spring/" style="font-size: 16.67px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/技巧/" style="font-size: 15px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 任伟
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>并发-2-Java实现 | 十年磨剑</title>
+  <meta name="author" content="任伟">
+  
+  <meta name="description" content="java与线程一、java线程的实现操作系统实现线程主要有三种方式：使用内核线程实现、使用用户线程实现和使用用户线程加轻量级进程混合实现。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="并发-2-Java实现"/>
+  <meta property="og:site_name" content="十年磨剑"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="十年磨剑" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">十年磨剑</a></h1>
+  <h2><a href="/blog/">十年磨一剑，一朝试锋芒</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog//">首页</a></li>
+    
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T03:19:28.000Z"><a href="/blog/2016/12/14/并发-2-Java实现/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title">并发-2-Java实现</h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--02-->
+        <div id="toc" class="toc-article">
+    <div class="toc-title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#java与线程"><span class="toc-text">java与线程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、java线程的实现"><span class="toc-text">一、java线程的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、使用内核线程实现"><span class="toc-text">1、使用内核线程实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、使用用户线程实现"><span class="toc-text">2、使用用户线程实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、使用用户线程加轻量级进程混合实现"><span class="toc-text">3、使用用户线程加轻量级进程混合实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、Java线程的实现"><span class="toc-text">4、Java线程的实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、java线程的调度"><span class="toc-text">二、java线程的调度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、java线程状态转换"><span class="toc-text">三、java线程状态转换</span></a></li></ol></li></ol>
+</div>
+
+      
+        <h2 id="java与线程"><a href="#java与线程" class="headerlink" title="java与线程"></a>java与线程</h2><h3 id="一、java线程的实现"><a href="#一、java线程的实现" class="headerlink" title="一、java线程的实现"></a>一、java线程的实现</h3><p>操作系统实现线程主要有三种方式：使用<em>内核线程</em>实现、使用<em>用户线程</em>实现和使用<em>用户线程加轻量级进程混合</em>实现。</p>
+<a id="more"></a>
+<h4 id="1、使用内核线程实现"><a href="#1、使用内核线程实现" class="headerlink" title="1、使用内核线程实现"></a>1、使用内核线程实现</h4><p>内核线程（Kernel-Level Thread，KLT）就是直接由操作系统内核支持的线程，这种线程由内核来完成线程切换，通常通过操纵调度器（Scheduler）对线程进行调度，并负责将线程的任务映射到各个处理器上。每个内核线程可以视为内核的一个分身，这样操作系统就有能力同时处理多件事情，支持多线程的内核就叫做多线程内核（Multi-Threads Kernel）。</p>
+<p>程序一般不会直接去使用内核线程，而是去使用内核线程的一种高级接口——轻量级进程（Light Wight Process，LWP），轻量级进程就是我们通常意义上所讲的线程，由于每个轻量级进程都由一个内核线程支持，因此只有先支持内核线程，才有轻量级进程。这种轻量级进程与内核之间1：1的关系，称为一对一的线程模型，如下图</p>
+<center><br><img src="http://img.blog.csdn.net/20160311012007412?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width="450" height="380"><br></center>
+
+<p>轻量级进程局限性：</p>
+<ul>
+<li>基于内核线程实现，各种线程操作，如创建、析构及同步，都需要进行系统调用。而系统调用的代价相对较高，需要在用户态（User Mode）和内核态（Kernel Mode）中来回切换。</li>
+<li>每个轻量级进程都需要有一个内核线程的支持，因此轻量级进程要消耗一定的内核资源（如内核线程的栈空间），因此一个系统支持轻量级进程的数量是有限的。</li>
+</ul>
+<h4 id="2、使用用户线程实现"><a href="#2、使用用户线程实现" class="headerlink" title="2、使用用户线程实现"></a>2、使用用户线程实现</h4><p>狭义上的用户线程（User Thread，UT）指的是完全建立在用户空间的线程库上，系统内核不能感知线程存在的实现。用户线程的建立、同步、销毁和调度完全在用户态中完成，不需要内核的帮助。</p>
+<center><br><img src="http://img.blog.csdn.net/20160311012026936?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width="450" height="320"><br></center>
+
+<p>优点：不需要切换到内核态，操作是非常快速且低消耗的，也可以支持规模更大的线程数量。</p>
+<p>缺点：由于操作系统只把处理器资源分配到进程，那些诸如“阻塞如何处理”、“多处理器系统中如何将线程映射到其他处理器上”这类问题解决起来异常困难，甚至不可能完成。</p>
+<p>应用：部分高性能数据库中的多线程就是由用户线程实现的。</p>
+<h4 id="3、使用用户线程加轻量级进程混合实现"><a href="#3、使用用户线程加轻量级进程混合实现" class="headerlink" title="3、使用用户线程加轻量级进程混合实现"></a>3、使用用户线程加轻量级进程混合实现</h4><p>混合实现下，即存在用用户线程，也存在轻量级进程。用户线程还是完全建立在用户空间中，因此用户线程的创建、切换、析构等操作依然廉价，并且可以支持大规模的用户线程并发。而操作系统提供支持的轻量级进程则作为用户线程和内核线程之间的桥梁，这样可以使用内核提供的线程调度功能及处理器映射，并且用户线程的系统调用要通过轻量级线程来完成，大大降低了整个进程被完全阻塞的风险。在这种混合模式中，用户线程与轻量级进程的数量比是不定的，即为N:M的关系，称为多对多的线程模型。</p>
+<center><br><img src="http://img.blog.csdn.net/20160311012055428?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width="450" height="300"><br></center>
+
+<p>应用：许多UNIX系列的操作系统，都提供了N:M的线程模型来实现。</p>
+<h4 id="4、Java线程的实现"><a href="#4、Java线程的实现" class="headerlink" title="4、Java线程的实现"></a>4、Java线程的实现</h4><p>对于Sun JDK来说，它的Windows版与Linux版都是使用<em>一对一</em>的线程模型实现的，一条Java线程就映射到一条<em>轻量级进程</em>中，因为Windows和Linux系统提供的线程模型就是一对一的。</p>
+<p>而在Solaris平台中，由于操作系统的线程特性可以同时支持一对一及多对多的线程模型，所以在Solaris版的JDK中可以配置使用哪种线程模型。</p>
+<h3 id="二、java线程的调度"><a href="#二、java线程的调度" class="headerlink" title="二、java线程的调度"></a>二、java线程的调度</h3><p>线程调度是指系统为线程分配处理器使用权的过程，主要调度方式有：</p>
+<p><em>协同式线程调度</em>。线程的执行时间由线程本身来控制，线程把自己的工作执行完了之后，要主动通知系统切换到另外一个线程上。<br><em>抢占式线程调度</em>。每个线程由系统来分配执行时间，线程的切换不由线程本身来决定。</p>
+<h3 id="三、java线程状态转换"><a href="#三、java线程状态转换" class="headerlink" title="三、java线程状态转换"></a>三、java线程状态转换</h3><center><br><img src="http://static.oschina.net/uploads/space/2013/0621/174442_0BNr_182175.jpg" width="600" height="400"><br></center>
+
+<ul>
+<li><p>1、新建(new)：新创建了一个线程对象。</p>
+</li>
+<li><p>2、可运行(runnable)：线程对象创建后，其他线程(比如main线程）调用了该对象的start()方法。该状态的线程位于可运行线程池中，等待被线程调度选中，获取cpu 的使用权 。</p>
+</li>
+<li><p>3、运行(running)：可运行状态(runnable)的线程获得了cpu 时间片（timeslice） ，执行程序代码。</p>
+</li>
+<li><p>4、阻塞(block)：阻塞状态是指线程因为某种原因放弃了cpu 使用权，也即让出了cpu timeslice，暂时停止运行。直到线程进入可运行(runnable)状态，才有机会再次获得cpu timeslice 转到运行(running)状态。阻塞的情况分三种： </p>
+<ul>
+<li>等待阻塞：运行(running)的线程执行o.wait()方法，JVM会把该线程放入等待队列(waitting queue)中。</li>
+<li>同步阻塞：运行(running)的线程在获取对象的同步锁时，若该同步锁被别的线程占用，则JVM会把该线程放入锁池(lock pool)中。</li>
+<li>其他阻塞：运行(running)的线程执行Thread.sleep(long ms)或t.join()方法，或者发出了I/O请求时，JVM会把该线程置为阻塞状态。当sleep()状态超时、join()等待线程终止或者超时、或者I/O处理完毕时，线程重新转入可运行(runnable)状态。</li>
+</ul>
+</li>
+<li><p>5、死亡(dead)：线程run()、main() 方法执行结束，或者因异常退出了run()方法，则该线程结束生命周期。死亡的线程不可再次复生。</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/blog/categories/多线程/">多线程</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/jvm/">jvm</a>, <a href="/blog/tags/多线程/">多线程</a>
+  </div>
+
+        <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+    <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+    <a href="#" class="bds_renren" data-cmd="renren"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+</div>
+
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "16"
+        },
+        "share": {},
+        "image": {
+            "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+            "viewText": “分享到",
+            "viewSize": "16"
+        },
+        "selectShare": {
+            "bdContainerClass": null,
+            "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+        }
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination" >
+    
+    <a href="/blog/2016/12/14/spring-1-IoC/" class="alignleft prev" >上一页</a>
+    
+    
+    <a href="/blog/2016/12/13/并发-3-线程安全/" class="alignright next" >下一页</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+<!-- 多说评论框 start -->
+ <div class="ds-thread" data-thread-key="/blog/2016/12/14/并发-2-Java实现/" data-title="并发-2-Java实现" data-url="renwei.github.io/blog/2016/12/14/并发-2-Java实现/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"screnwei"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+<section id="comment">
+</section>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/categories/hadoop/">hadoop</a><small>2</small></li>
+  
+    <li><a href="/blog/categories/jvm/">jvm</a><small>4</small></li>
+  
+    <li><a href="/blog/categories/多线程/">多线程</a><small>16</small></li>
+  
+    <li><a href="/blog/categories/技巧/">技巧</a><small>3</small></li>
+  
+    <li><a href="/blog/categories/搜索/">搜索</a><small>1</small></li>
+  
+    <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/flume/" style="font-size: 11.67px;">flume</a> <a href="/blog/tags/hadoop/" style="font-size: 13.33px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16.67px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18.33px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/spring/" style="font-size: 16.67px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/技巧/" style="font-size: 15px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 任伟
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

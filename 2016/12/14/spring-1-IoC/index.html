@@ -1,0 +1,572 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>1-spring-IoC | 十年磨剑</title>
+  <meta name="author" content="任伟">
+  
+  <meta name="description" content="IOC概述
+Spring中IOC的概念，控制反转概念其实包含两个层面的意思，“控制”是接口实现类的选择控制权；而“反转”是指这种选择控制权从调用者转移到外部第三方或容器的手中。
+BeanFactory、ApplicationContext和WebApplicationContext是Spring框架三个最核心的接口，框架中其他大部分的类都围绕他们展开、为他们提供支持和服务。在这些支持类中，Respurce是一个不可忽视的重要接口，框架通过Resource实现了和具体资源的解耦，不论他们位于何种存储介质中，都可以通过相同的实例返回。与Resource配合的另一个接口是ResourceLoader，ResourceLoader采用了策略模式，可以通过传入资源地址的信息，自动选择适合的底层资源实现类，为上层对资源的引用提供极大的便利。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="1-spring-IoC"/>
+  <meta property="og:site_name" content="十年磨剑"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="十年磨剑" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">十年磨剑</a></h1>
+  <h2><a href="/blog/">十年磨一剑，一朝试锋芒</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog//">首页</a></li>
+    
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:24:25.000Z"><a href="/blog/2016/12/14/spring-1-IoC/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title">1-spring-IoC</h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--02-->
+        <div id="toc" class="toc-article">
+    <div class="toc-title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#IOC概述"><span class="toc-text">IOC概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、IOC-控制反转："><span class="toc-text">一、IOC 控制反转：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、Spring三大最核心接口："><span class="toc-text">二、Spring三大最核心接口：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#BeanFactory"><span class="toc-text">BeanFactory</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ApplicationContext"><span class="toc-text">ApplicationContext</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#WebApplicationContext"><span class="toc-text">WebApplicationContext</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、Bean生命周期改变方式："><span class="toc-text">三、Bean生命周期改变方式：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-配置概述："><span class="toc-text">Spring 配置概述：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、Spring容器高层视图"><span class="toc-text">一、Spring容器高层视图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、基于XML的配置"><span class="toc-text">二、基于XML的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、基于注解的配置"><span class="toc-text">三、基于注解的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、基于Java类的配置"><span class="toc-text">四、基于Java类的配置</span></a></li></ol></li></ol>
+</div>
+
+      
+        <h2 id="IOC概述"><a href="#IOC概述" class="headerlink" title="IOC概述"></a>IOC概述</h2><ul>
+<li>Spring中IOC的概念，控制反转概念其实包含两个层面的意思，“控制”是接口实现类的选择控制权；而“反转”是指这种选择控制权从调用者转移到外部第三方或容器的手中。</li>
+<li>BeanFactory、ApplicationContext和WebApplicationContext是Spring框架三个最核心的接口，框架中其他大部分的类都围绕他们展开、为他们提供支持和服务。在这些支持类中，Respurce是一个不可忽视的重要接口，框架通过Resource实现了和具体资源的解耦，不论他们位于何种存储介质中，都可以通过相同的实例返回。与Resource配合的另一个接口是ResourceLoader，ResourceLoader采用了策略模式，可以通过传入资源地址的信息，自动选择适合的底层资源实现类，为上层对资源的引用提供极大的便利。</li>
+</ul>
+<a id="more"></a>
+<h3 id="一、IOC-控制反转："><a href="#一、IOC-控制反转：" class="headerlink" title="一、IOC 控制反转："></a>一、IOC 控制反转：</h3><ul>
+<li>1、“控制”是指接口实现类的选择控制权；</li>
+<li>2、“反转”是指这种选择控制权从调用类转移到外部第三方类或者容器手里；</li>
+</ul>
+<h3 id="二、Spring三大最核心接口："><a href="#二、Spring三大最核心接口：" class="headerlink" title="二、Spring三大最核心接口："></a>二、Spring三大最核心接口：</h3><h4 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h4><ul>
+<li>1、Spring框架的基础设施，面向Spring本身；</li>
+<li>2、在初始化容器时，并未实例化Bean，直到第一次访问某个Bean时才实例目标Bean；</li>
+<li>3、若需要对bean定义后处理器，必须在代码中通过手工调用spring方法进行注册；</li>
+<li><p>4、初始化方式 </p>
+<pre><code>new XmlBeanFactory(new Resource())；
+</code></pre></li>
+</ul>
+<h4 id="ApplicationContext"><a href="#ApplicationContext" class="headerlink" title="ApplicationContext"></a>ApplicationContext</h4><ul>
+<li>1、面向使用Spring框架的开发者，几乎所有的应用场合我们都直接使用ApplicationContext文件中定义的 Bean；</li>
+<li>2、在初始化应用上下文时就实例化所有的单例的Bean</li>
+<li>3、若需要对bean定义后处理器，其会利用反射机制自动识别出配置文件中的Processor，并自动注册到应用上下文中</li>
+<li><p>4、初始化方式</p>
+<pre><code>new ClassPathXmlApplication(&quot;classpath:bean.xml&quot;) 
+
+new FileSystemXmlApplicationContext(&quot;file:beans.xml&quot;)
+
+new AnnotationConfigApplicationContext(Beans.class)
+</code></pre></li>
+</ul>
+<h4 id="WebApplicationContext"><a href="#WebApplicationContext" class="headerlink" title="WebApplicationContext"></a>WebApplicationContext</h4><ul>
+<li>1、WebApplication需要ServletContext实例，也就是说他必须要在拥有Web容器的前提下才能完成启动工作。</li>
+<li><p>2、Spring分别提供了用于启动WebApplicationConetext的Servlet和Listener，在web.xml中配置</p>
+<pre><code>org.springframework.web.context.ContextLoaderServlet
+org.springframework.web.context.ContextLoaderListener
+</code></pre></li>
+<li><p>3、WebApplicationContext需要使用日志功能,用户可以将Log4j配置文件放到类路径 WEB-INF/classes下，这时Log4j引擎即可顺利启动。用户可以在web.xml中通过Log4jConfigServlet和Log4jConfigListener指定Log4j配置文件位置，但要注意启动顺序（load-on-startup）</p>
+</li>
+<li>4、使用标注@Configuration的java类提供信息，contextClass、contextConfigLocation</li>
+</ul>
+<h3 id="三、Bean生命周期改变方式："><a href="#三、Bean生命周期改变方式：" class="headerlink" title="三、Bean生命周期改变方式："></a>三、Bean生命周期改变方式：</h3><ul>
+<li>1、&lt;bean&gt;中的init-method 和 destroy-method 这两个属性为Bean指定初始化和销毁的方法</li>
+<li>2、InitDestroyAnonotationBeanPostProcessor 的 @PostConstruct、@PreDestroy</li>
+</ul>
+<h2 id="Spring-配置概述："><a href="#Spring-配置概述：" class="headerlink" title="Spring 配置概述："></a>Spring 配置概述：</h2><ul>
+<li>用户可以通过属性注入、构造函数注入的方式建立Bean和Bean的依赖；可以通过字面值的方式设置Bean的属性，也可以通过ref引用容器中其他的Bean；Spring为集合类提供了专门的配置标签；</li>
+<li>使用Spring简化配置方式可以让配置文件更加紧凑；可以通过配置文件中的&lt;bean&gt;标签建立关联、继承、依赖、引用的关系，合理地使用这些关系可以简化配置、提高配置质量；</li>
+<li>Spring提供了5个Bean作用范围，在Web应用环境下，可以使用request、 session和globalSession的Bean作用域；</li>
+<li>通过@Component及另外三个衍型注解（@Repository、@Service、@Controller）配合@Autowired就可以很好地使用基于注解的配置进行Bean的定义和注入，这种方式比在XML文件中通过&lt;bean&gt;提供配置文件更加简单；</li>
+<li>任务POJO标注了@Configuration注解后就可以为Spring容器提供Bean的定义信息，在类方法中标注@Bean相当于定义了一个Bean，同时还提供了Bean的实例化逻辑。由于Bean的实例化逻辑是在方法中定义的，因此他可以应对一些复杂的Bean的实例化场景。</li>
+<li>不管配置使用何种配置方式，Spring都可以很好地将他们整合起来，在Spring容器内部，这些不同方法的Bean定义信息是大体相同的，三者指甲并不存在谁替代谁的问题，他们都有自己最合适的应用场合。</li>
+</ul>
+<h3 id="一、Spring容器高层视图"><a href="#一、Spring容器高层视图" class="headerlink" title="一、Spring容器高层视图"></a>一、Spring容器高层视图</h3><p>Spring 启动时读取应用程序提供的Bean配置信息，并在Spring容器中生成一份相应的Bean配置注册表，然后根据这张注册表实例化Bean，装配号Bean之间的依赖关系，为上层应用提供准备就绪的运行环境。<br><img src="http://i1.piimg.com/567571/3bcbefcf184c69f2.png" alt=""><br>Bean配置信息是Bean的元数据信息，它由4个方面组成：</p>
+<ul>
+<li>Bean的实现类</li>
+<li>Bean的属性信息，数据库连接数、用户名、密码</li>
+<li>Bean的依赖</li>
+<li>Bean的行为配置</li>
+</ul>
+<h3 id="二、基于XML的配置"><a href="#二、基于XML的配置" class="headerlink" title="二、基于XML的配置"></a>二、基于XML的配置</h3><ul>
+<li><p>1、 schema格式</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans
+    xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns.xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns.aop=&quot;http://www/springframework.org/schema/aop&quot;
+    xsi:schemaLocation=&quot;
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/beans/spring-aop-3.0.xsd 
+    &quot;&gt;
+    &lt;!--默认命名空间的配置--&gt;
+    &lt;bean id=&quot;a&quot; class=&quot;&quot;/&gt;
+
+    &lt;!--aop命名空间的配置--&gt;
+    &lt;aop:config&gt;
+    &lt;/aop:config&gt;
+&lt;/beans&gt;
+</code></pre></li>
+</ul>
+<ul>
+<li><p>2、依赖注入</p>
+<ul>
+<li><p>1、属性注入：</p>
+<pre><code>&lt;bean id=&quot;beanB&quot; class=&quot;BeanB&quot;&gt;
+    &lt;property name=&quot;&quot; value=&quot;&quot;/&gt;
+&lt;/bean&gt;
+</code></pre></li>
+<li><p>2、构造函数注入：<br><br>  按照类型匹配入参</p>
+<pre><code>&lt;bean id=&quot;beanB&quot; class=&quot;BeanB&quot;&gt;
+    &lt;constructor-arg type=&quot;java.lang.String&quot; value=&quot;&quot; /&gt;
+&lt;/bean&gt;
+</code></pre><p>  按照索引匹配入参</p>
+<pre><code>&lt;constructor-arg index=&quot;0&quot; value=&quot;&quot;/&gt;
+</code></pre><p>  联合使用类型和索引匹配入参</p>
+<pre><code>&lt;constructor-arg index=&quot;0&quot; type=&quot;java.lang.String&quot; value=&quot;&quot; /&gt;
+</code></pre><p>  通过自身类型反射匹配入参</p>
+<pre><code>&lt;bean id=&quot;beanA&quot; class=&quot;BeanA&quot;/&gt;
+&lt;bean id=&quot;beanB&quot; class=&quot;BeanB&quot;/&gt;
+&lt;bean id=&quot;beanC&quot; class=&quot;BeanC&quot;&gt;
+    &lt;constructor-arg&gt;
+        &lt;value&gt;beanA&lt;/bean&gt;
+    &lt;/constructor-arg&gt;
+    &lt;constructor-arg&gt;
+        &lt;value&gt;beanB&lt;/bean&gt;
+    &lt;/constructor-arg&gt;
+&lt;/bean&gt;
+</code></pre></li>
+<li><p>3、工厂方法注入<br><br>  非静态工厂方法：</p>
+<pre><code>&lt;bean id=&quot;cF&quot; class=&quot;CF&quot;/&gt;
+&lt;bean id=&quot;c&quot; factory-bean=&quot;cF&quot; factory-method=&quot;cf&quot;/&gt;
+</code></pre><p>  静态工厂方法：</p>
+<pre><code>&lt;bean id=&quot;c&quot; class=&quot;CF&quot; factory-method=&quot;getInstance&quot;/&gt;
+</code></pre><blockquote>
+<p>扩展：使用Spring框架代替了工厂方法等经典设计模式了么？ 由于Spring IoC容器以框架的形式提供工厂方法的功能，并以透明的方式开放给开发者，所以很少需要手工编写基于工厂方法的类。不过在一些遗留系统或第三方类库中，我们还会碰到工厂方法，这时用户可以使用Spring工厂方法注入的方式进行配置。</p>
+</blockquote>
+</li>
+<li><p>4、方法注入<br><br>  lookup方法注入： 无状态Bean的作用域一般配置为singletion单实例模式，如果我们往singletion的类A中注入prototype的类B，并希望每次调用A的getB()都能返回一个新的B，使用传统的注入方法无法实现这样的要求。使用lookup方法注入可以实现方法替换，可以使用Bean的方法去替换另一个Bean的方法。</p>
+<pre><code>public class BeanBImpl implements BeanB{
+    @Override
+    public int get BeanB(){}
+}
+
+public abstract class BeanAImpl implements BeanA{
+    //protected修饰
+    protected BeanB beanB = getBeanB();
+
+    //抽象方法，返回cglib构造的BeanB的子类
+    public abstract BeanB getBeanB();
+
+    //调用beanB里面的方法
+}
+
+&lt;bean id=&quot;beanB&quot; class=&quot;BeanBImpl&quot;/&gt;
+
+&lt;bean id=&quot;beanA&quot; class=&quot;BeanAImpl&quot;&gt;
+    &lt;lookup-method name=&quot;getBeanB&quot; bean=&quot;beanB&quot;/&gt;
+&lt;/bean&gt;
+</code></pre><p>  方法替换：</p>
+<pre><code>public class BeanAImpl implements BeanA{
+    public BeanB getBeanB(){
+        return null;
+    }
+}    
+
+public class BeanB2 implements org.springframwwork.beans.factory.support.MethodReplacer{
+    public Object reimplement(Object arg0, Method arg1, Object[] arg2) throws Throwable{
+        return new BeanB();
+    }
+}
+
+&lt;bean id=&quot;beanA&quot; class=&quot;BeanAImpl&quot;&gt;
+    &lt;replaced-method name=&quot;getBeanB&quot; replacer=&quot;beanB2&quot;/&gt;
+&lt;/bean&gt;
+
+&lt;bean id=&quot;beanB2&quot; class=&quot;BeanB2&quot;/&gt;    
+</code></pre></li>
+</ul>
+</li>
+<li><p>3、注入参数详解</p>
+<ul>
+<li><p>1、字面值：指可用字符串表示的值，可以通过&lt;value&gt;元素标签进行注入。</p>
+<pre><code>&lt;bean id=&quot;beanC&quot; class=&quot;BeanC&quot;&gt;
+    &lt;property name=&quot;str&quot;&gt;
+        &lt;value&gt;&lt;![CDATA[红旗&amp;CA72]]&gt;&lt;/value&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+</code></pre></li>
+<li><p>2、引用其他Bean：Spring IoC容器中定义的Bean可以相互引用，IoC容器充当红娘的角色。</p>
+<pre><code>&lt;bean id=&quot;beanB&quot; class=&quot;BeanBImpl&quot;/&gt;
+&lt;bean id=&quot;beanC&quot; class=&quot;BeanC&quot;&gt;
+    &lt;property name=&quot;beanB&quot;&gt;
+        &lt;ref bean=&quot;beanB&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+</code></pre></li>
+<li><p>3、内部Bean：如果beanB只被beanC引用而不会被容器中任何其他的Bean引用，则可以将beanB以内部Bean的方式注入到BeanC中。</p>
+<pre><code>&lt;bean id=&quot;beanC&quot; class=&quot;BeanC&quot;&gt;
+    &lt;property name=&quot;beanB&quot;&gt;
+        &lt;bean id=&quot;beanB&quot; class=&quot;BeanBImpl&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+</code></pre></li>
+<li><p>4、null值：通过配置的方式，为属性BeanB注入null值。</p>
+<pre><code>&lt;property name=&quot;beanB&quot;&gt;&lt;null/&gt;&lt;/property&gt;
+</code></pre></li>
+<li><p>5、级联属性 <property name="a.b.c" value=""></property></p>
+<pre><code>&lt;property name=&quot;beanB.b&quot; value=&quot;b&quot;/&gt;
+</code></pre></li>
+<li><p>6、集合类型属性</p>
+<pre><code>&lt;property name=&quot;beanB&quot;&gt;
+    &lt;set&gt;
+        &lt;value&gt;v1&lt;/value&gt;
+        &lt;value&gt;v2&lt;/value&gt;
+    &lt;/set&gt;
+&lt;/property&gt;
+</code></pre></li>
+</ul>
+</li>
+<li><p>4、简化配置方式</p>
+<ul>
+<li><p>1、字面值属性</p>
+<pre><code>&lt;property name=&quot;str&quot; value=&quot;&lt;![CDATA[红旗&amp;CA72]]&gt;&quot;/&gt;
+</code></pre></li>
+<li><p>2、引用对象属性</p>
+<pre><code>&lt;property name=&quot;beanB&quot; ref=&quot;beanB&quot;/&gt;
+</code></pre></li>
+<li><p>3、使用p命名空间</p>
+<pre><code>&lt;bean id=&quot;beanB&quot; class=&quot;BeanB&quot;
+    p:value1=&quot;value1&quot;
+    p:value2=&quot;value2&quot;/&gt;
+</code></pre></li>
+<li><p>4、自动装配</p>
+<pre><code>//可选值有 byName、byType、constructor、autodetect
+&lt;default-autowire &gt;
+</code></pre><blockquote>
+<p>一般情况下，在实际的项目中很少使用自动装配功能，因为和自动装配功能所带来的好处比起来，明确清晰的配置文档以及不存在潜在错误的需求更具说服力。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>5、bean之间的关系</p>
+<ul>
+<li><p>1、继承</p>
+<pre><code>&lt;!--定义抽象bean&gt;
+&lt;bean id=&quot;abstractA&quot; class=&quot;AbstractA&quot;
+    p:value1=&quot;value1&quot; p:value2=&quot;value2&quot; abstract=&quot;true&quot;/&gt;
+&lt;!--继承于abstractA &gt;
+&lt;bean id=&quot;A&quot; p:value3=&quot;value3&quot; parent=&quot;abstractA&quot;/&gt;
+</code></pre></li>
+<li><p>2、依赖</p>
+<p>  依赖关系明显：beanB是beanA的一个属性。</p>
+<pre><code>public class BeanA{
+    private setBeanB(BeanB b){...}
+}
+
+&lt;bean id=&quot;beanA&quot; class=&quot;BeanA&quot; ref=&quot;beanB&quot;/&gt;
+</code></pre><p>  依赖关系不明显：一个类与另一个类逻辑关联，即beanB初始化的时候，希望beanA全部初始化。</p>
+<pre><code>public class BeanA{}
+public class BeanB{}
+
+&lt;bean id=&quot;beanA&quot; class=&quot;BeanA&quot; depends-on=&quot;beanB&quot;/&gt;
+&lt;bean id=&quot;beanB&quot; class=&quot;BeanB&quot;/&gt;
+</code></pre></li>
+<li><p>3、引用<br><br>  在一个Bean钟引用另外Bean的id是希望在运行期间通过 getBean(beanName)的方法获取对应的Bean。通过&lt;idref&gt;引用另一个&lt;bean&gt;的名字，在容器启动时，Spring负责检查引用关系的正确性。</p>
+<pre><code>&lt;bean id=&quot;beanA&quot; class=&quot;BeanA&quot;/&gt;
+&lt;bean id=&quot;beanB&quot; class=&quot;BeanB&quot;&gt;
+    &lt;property name=&quot;beanAId&quot; &gt;
+        &lt;idref bean=&quot;beanA&quot;/&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+</code></pre></li>
+</ul>
+</li>
+<li><p>6、整合多个配置文件</p>
+<ul>
+<li>1、在启动Spring容器时，通过一个Spring数组来指定这些配置文件；</li>
+<li>2、应用层面提供一个整合的配置文件，通过&lt;import&gt;将各个模块整合起来，这样容器在启动时，只需要关注这个整合的配置文件就可以了；</li>
+</ul>
+</li>
+<li><p>7、Bean的作用域<br><img src="http://i1.piimg.com/567571/1d0fd6144c5d6e22.png" alt=""></p>
+<blockquote>
+<p>扩展：一般情况下，无状态或者状态不可变的类适合使用单例类。在传统开发中，由于Dao类执有Connection这个非线程安全的变量而没有采用单例模式。而在Spring环境下，对于所有的Dao类都可以采用单实例模式，因为Spring利用AOP和LocalThread的功能，对非线程安全的类的变量（或称状态）进行了特殊的处理，使这些非线程安全的类变成线程安全的类。</p>
+</blockquote>
+<p>作用域依赖问题：<br>将Web相关作用域的Bean注入到singleton或prototype的Bean中，需要一些额外的配置。</p>
+<pre><code>&lt;bean name=&quot;beanA&quot; class=&quot;BeanA&quot; scope=&quot;request&quot;&gt;
+    &lt;aop:scoped-proxy/&gt;//创建代理
+&lt;/bean&gt;
+&lt;bean id=&quot;beanB&quot; class=&quot;BeanB&quot;&gt;
+    &lt;property name=&quot;beanA&quot; ref=&quot;beanA&quot;/&gt;//引用web相关作用域的bean
+&lt;/bean&gt;
+</code></pre></li>
+<li><p>8、FactoryBean（已废弃）。实例化Bean的过程如果比较复杂，可以使用Spring提供的 org.springframework.beans.factory.FactoryBean工厂类接口定制实例化Bean的逻辑</p>
+</li>
+</ul>
+<h3 id="三、基于注解的配置"><a href="#三、基于注解的配置" class="headerlink" title="三、基于注解的配置"></a>三、基于注解的配置</h3><ul>
+<li><p>1、注解：</p>
+<ul>
+<li>@Compoment： Spring容器自动将POJO转换为容器管理的Bean；</li>
+<li>@Repository： 用于对Dao实现类进行标注；</li>
+<li>@Service：用于对Service实现类进行标注；</li>
+<li>@Controller：用于对Controller实现类进行标注</li>
+</ul>
+</li>
+<li><p>2、使用注解配置信息启动Spring容器。声明context命名空间，扫描类包以应用注解定义的Bean </p>
+<pre><code>&lt;context:component-scan base-package=&quot;com.renwei&quot;&gt;
+    &lt;context:include-filter type=&quot;regex&quot; expression=&quot;com\.renwei\.anno.*&quot;/&gt;
+    &lt;context:exclude-filter type=&quot;aspectj&quot; expression=&quot;com.renwei..*Controller+&quot;/&gt;
+&lt;/context:component-scan&gt;
+</code></pre><p>  过滤表达式<br><img src="http://p1.bqimg.com/567571/bb1be01c330d9638.png" alt=""></p>
+</li>
+<li><p>3、自动装配Bean</p>
+<ul>
+<li>通过@Autowired进行自动注入</li>
+<li>使用@Auto的required属性：设置是否一定要匹配到对应的Bean</li>
+<li>使用@Qualifier指定注入Bean的名称：容器中有一个以上匹配的Bean时，使用该注解限定Bean的名称。</li>
+<li>对类方法进行标注：注解设置在 setXX 方法上面。</li>
+<li>对集合类进行标注</li>
+<li>对标准注解的支持<br>  @Resource 自动采用标注处的变量名或方法名作为Bean的名称<br>  @Inject </li>
+</ul>
+</li>
+<li><p>4、Bean作用范围及生命过程方法</p>
+<ul>
+<li>@Scope指定Bean的作用范围</li>
+<li>@PostConstruct @PreDestory改变Bean的生命过程</li>
+</ul>
+</li>
+</ul>
+<h3 id="四、基于Java类的配置"><a href="#四、基于Java类的配置" class="headerlink" title="四、基于Java类的配置"></a>四、基于Java类的配置</h3><ul>
+<li><p>1、使用Java类提供Bean定义信息</p>
+<ul>
+<li>普通POJO只要标注@Configuration注解，就可以为Spring容器提供Bean定义的信息。</li>
+</ul>
+</li>
+<li><p>2、使用基于Java类的配置信息启动Spring容器</p>
+<ul>
+<li><p>使用AnnotationConfigApplicationContext</p>
+<pre><code>@Configuration
+public class DaoConfig{
+    @Scopde(&quot;prototype&quot;)
+    @Bean
+    public LogDao logDao(){
+        return new LogDao();
+    }
+}
+
+@Configuration
+public class ServiceConfig{
+    @Scopde(&quot;prototype&quot;)
+    @Bean
+    public LogService logService(){
+        return new LogService();
+    }
+}
+
+//Test
+AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+//注册多个@Configuration配置类
+ctx.register(DaoConfig.class);
+ctx.register(ServiceConfig.class);
+ctx,refresh();
+
+LogDao logDao = ctx.getBean(LogDao.class);
+LogService logService = ctx.getBean(LogService);
+</code></pre></li>
+<li><p>通过XML配置文件引用@Configuration的配置 </p>
+<pre><code>&lt;context:component-scan base-package=&quot;&quot; resource-pattern=&quot;.class&quot;&gt;
+</code></pre></li>
+<li><p>通过 Configuration配置类引用XMl配置信息 @ImportResurce</p>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/blog/categories/框架/">框架</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/java/">java</a>, <a href="/blog/tags/spring/">spring</a>, <a href="/blog/tags/ioc/">ioc</a>
+  </div>
+
+        <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+    <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+    <a href="#" class="bds_renren" data-cmd="renren"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+</div>
+
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "16"
+        },
+        "share": {},
+        "image": {
+            "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+            "viewText": “分享到",
+            "viewSize": "16"
+        },
+        "selectShare": {
+            "bdContainerClass": null,
+            "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+        }
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination" >
+    
+    <a href="/blog/2016/12/14/spring-2-AoP/" class="alignleft prev" >上一页</a>
+    
+    
+    <a href="/blog/2016/12/14/并发-2-Java实现/" class="alignright next" >下一页</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+<!-- 多说评论框 start -->
+ <div class="ds-thread" data-thread-key="/blog/2016/12/14/spring-1-IoC/" data-title="1-spring-IoC" data-url="renwei.github.io/blog/2016/12/14/spring-1-IoC/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"screnwei"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+<section id="comment">
+</section>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/categories/hadoop/">hadoop</a><small>2</small></li>
+  
+    <li><a href="/blog/categories/jvm/">jvm</a><small>4</small></li>
+  
+    <li><a href="/blog/categories/多线程/">多线程</a><small>16</small></li>
+  
+    <li><a href="/blog/categories/技巧/">技巧</a><small>3</small></li>
+  
+    <li><a href="/blog/categories/搜索/">搜索</a><small>1</small></li>
+  
+    <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/flume/" style="font-size: 11.67px;">flume</a> <a href="/blog/tags/hadoop/" style="font-size: 13.33px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16.67px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18.33px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/spring/" style="font-size: 16.67px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/技巧/" style="font-size: 15px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 任伟
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

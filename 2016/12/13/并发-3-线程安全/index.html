@@ -1,0 +1,244 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>并发-3-线程安全 | 十年磨剑</title>
+  <meta name="author" content="任伟">
+  
+  <meta name="description" content="如何安全？一、java中的线程安全1、线程安全的概念当多个线程访问同一个对象时，如果不用考虑这些线程在运行时环境的调度和交替执行，也不需要进行额外的同步，或者在调用方法进行任何其他的协调操作，调用这个对象的行为都可以获得正确的结果，那这个对象是线程安全的。
+2、讨论线程安全的前提讨论的线程安全，限定于多个线程之间共享数据访问这个前提，因为如果一段代码不会与其他线程共享数据，那么从线程安全的角度来看，程序是串行执行还是多线程执行对他来说是完全没有区别的。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="并发-3-线程安全"/>
+  <meta property="og:site_name" content="十年磨剑"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="十年磨剑" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">十年磨剑</a></h1>
+  <h2><a href="/blog/">十年磨一剑，一朝试锋芒</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog//">首页</a></li>
+    
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-13T10:40:36.000Z"><a href="/blog/2016/12/13/并发-3-线程安全/">2016-12-13</a></time>
+      
+      
+  
+    <h1 class="title">并发-3-线程安全</h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--02-->
+        <div id="toc" class="toc-article">
+    <div class="toc-title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#如何安全？"><span class="toc-text">如何安全？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、java中的线程安全"><span class="toc-text">一、java中的线程安全</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、线程安全的概念"><span class="toc-text">1、线程安全的概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、讨论线程安全的前提"><span class="toc-text">2、讨论线程安全的前提</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、线程安全的程度"><span class="toc-text">3、线程安全的程度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、如何判断线程安全"><span class="toc-text">4、如何判断线程安全</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、线程安全的实现方法"><span class="toc-text">二、线程安全的实现方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、互斥同步（阻塞同步）"><span class="toc-text">1、互斥同步（阻塞同步）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、非阻塞同步"><span class="toc-text">2、非阻塞同步</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、无同步方案"><span class="toc-text">3、无同步方案</span></a></li></ol></li></ol></li></ol>
+</div>
+
+      
+        <h2 id="如何安全？"><a href="#如何安全？" class="headerlink" title="如何安全？"></a>如何安全？</h2><h3 id="一、java中的线程安全"><a href="#一、java中的线程安全" class="headerlink" title="一、java中的线程安全"></a>一、java中的线程安全</h3><h4 id="1、线程安全的概念"><a href="#1、线程安全的概念" class="headerlink" title="1、线程安全的概念"></a>1、线程安全的概念</h4><p>当多个线程访问同一个对象时，如果不用考虑这些线程在运行时环境的调度和交替执行，也不需要进行额外的同步，或者在调用方法进行任何其他的协调操作，调用这个对象的行为都可以获得正确的结果，那这个对象是线程安全的。</p>
+<h4 id="2、讨论线程安全的前提"><a href="#2、讨论线程安全的前提" class="headerlink" title="2、讨论线程安全的前提"></a>2、讨论线程安全的前提</h4><p>讨论的线程安全，限定于多个线程之间共享数据访问这个前提，因为如果一段代码不会与其他线程共享数据，那么从线程安全的角度来看，程序是串行执行还是多线程执行对他来说是完全没有区别的。</p>
+<a id="more"></a>
+<h4 id="3、线程安全的程度"><a href="#3、线程安全的程度" class="headerlink" title="3、线程安全的程度"></a>3、线程安全的程度</h4><p>对象的线程安全不是一个非真即假的二元排他选项，按照线程安全的“安全程度”由强至弱来排序，可将Java语言中各种操作共享的数据分为以下5类：</p>
+<ul>
+<li><p>不可变<br><br>java语言中，共享对象是基本数据类型，使用final关键字修饰；共享数据是对象，需要保证对象的行为不会对其状态产生任何影响。</p>
+</li>
+<li><p>绝对线程安全<br><br>一个类不管运行时环境如何，调用者都不需要任何额外的同步措施。但是通常需要付出很大的，甚至有时候是不切实际的代价。</p>
+</li>
+<li><p>相对线程安全<br><br>需要保证这个对象单独的操作是线程安全的，但是对于一些特定顺序的连续调用，就可能需要在调用端使用额外的同步手段俩保证调用的正确性。（java语言中，大部分的线程安全类都是数据这种类型，例如Vector、HashTable、Collections的SynchronizedCollection()方法包装的集合等。）</p>
+</li>
+<li><p>线程对立<br><br>线程对立是指无论调用端是否采取了同步措施，都无法在多线程环境中并发使用的代码。（hread.suspend() 和 resume()方法，并发执行可能会发生死锁。）</p>
+</li>
+</ul>
+<h4 id="4、如何判断线程安全"><a href="#4、如何判断线程安全" class="headerlink" title="4、如何判断线程安全"></a>4、如何判断线程安全</h4><p>并发程序正确地执行，必须要保证原子性、可见性以及有序性。只要有一个没有被保证，就有可能会导致程序运行不正确。</p>
+<h3 id="二、线程安全的实现方法"><a href="#二、线程安全的实现方法" class="headerlink" title="二、线程安全的实现方法"></a>二、线程安全的实现方法</h3><p>同步是指在多个线程并发访问共享数据时，保证共享数据在同一个时刻只被一个（或者是一些，使用信号量的时候）线程使用。</p>
+<h4 id="1、互斥同步（阻塞同步）"><a href="#1、互斥同步（阻塞同步）" class="headerlink" title="1、互斥同步（阻塞同步）"></a>1、互斥同步（阻塞同步）</h4><p>临界区（Critical Section）、互斥量（Mutex）和信号量（Semaphore）都是主要的互斥实现方式。</p>
+<p>在java中，可以使用synchronized关键字和java.util.concurrent包中的重入锁（ReentrantLock）来实现同步。他们都具备一样的线程重入特性，只是在代码写法上有区别，一个表现为原生语法上的互斥锁，一个表现为API层面的互斥锁（lock()和unlock()方法配合try/finally语句块来完成）。</p>
+<p>ReentrantLock增加了一些功能，    等待可中断、可实现公平锁，以及锁可以绑定多个条件。等待可中断是指当持有锁的线程长期不释放锁的时候，正在等待的线程可以选择放弃等待，改为处理其他事情，可中断特性对处理执行时间非常长的同步块很有帮助。公平锁是指在等待同一个锁时，必须按照申请锁的时间顺序依次获得锁；synchronized中的锁是非公平的，ReentrantLock默认情况下也是非公平的，但可以通过带布尔值的构造函数要求使用公平锁。锁绑定多个条件是指一个ReentrantLock对象可以同时绑定多个Condition对象。</p>
+<h4 id="2、非阻塞同步"><a href="#2、非阻塞同步" class="headerlink" title="2、非阻塞同步"></a>2、非阻塞同步</h4><p>互斥同步属于一种悲观的并发策略，总是认为只要不去做正确的同步措施（例如加锁），那就肯定会出现问题。随着硬件指令集的发展，我们有了另外一个选择：基于冲突检测的乐观并发策略。就是先进行操作，如果没有其他线程争用共享数据，那操作就成功了，如果共享数据有争用，产生了冲突，那就再采取其他的补偿措施（最常见的补偿措施就是不断地重试，知道成功为止），这种乐观的并发策略的许多实现都不需要把线程挂起，因此这种同步操作称为非阻塞同步。应用如：AtomicInteger。</p>
+<p>CAS算法：包含3个参数CAS（V，E，N），V表示要更新的变量，E表示预期值，N表示新值。仅当V值等于E值时，才会将V值设为N，如果V值和E值不同，则说明已经有其他线程做了更新，则当前线程什么都不做。</p>
+<h4 id="3、无同步方案"><a href="#3、无同步方案" class="headerlink" title="3、无同步方案"></a>3、无同步方案</h4><p>如果一个方法本来就不涉及共享数据，那它自然就无须任何同步措施去保证正确性。如：<em>可重入代码</em>和<em>线程本地存储</em>。</p>
+<p>可重入代码是能够被多个进程访问和使用的一段代码，比如函数，而且它有一个特点，就是无论哪个进程调用它，所得到的结果都是一样，这就要求可重入代码中不应该有全局变量或静态变量，因为这些变量会保存某一个进程的修改。可重入代码中的变量应该都是局部变量，每次重新调用时变量重新被赋值，从而保证，每个进程对它的访问都产生同样的结果。</p>
+<p>每一个线程的Thread对象中都有一个ThreadLocalMap对象，这个对象存储了一组以ThreadLocal.threadLocalHashCode为键，以本地线程变量为值得K-V键值对，ThreadLocal就是当前线程的ThreadLocalMap的访问入口，每一个ThreadLocal对象都包含一个独一无二的threadLocalHashCode值，使用这个值就可以在线程K-V值对中找回对应的本地线程变量。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/blog/categories/多线程/">多线程</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/jvm/">jvm</a>, <a href="/blog/tags/多线程/">多线程</a>
+  </div>
+
+        <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+    <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+    <a href="#" class="bds_renren" data-cmd="renren"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+</div>
+
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "16"
+        },
+        "share": {},
+        "image": {
+            "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+            "viewText": “分享到",
+            "viewSize": "16"
+        },
+        "selectShare": {
+            "bdContainerClass": null,
+            "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+        }
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination" >
+    
+    <a href="/blog/2016/12/14/并发-2-Java实现/" class="alignleft prev" >上一页</a>
+    
+    
+    <a href="/blog/2016/12/13/并发-1-概念/" class="alignright next" >下一页</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+<!-- 多说评论框 start -->
+ <div class="ds-thread" data-thread-key="/blog/2016/12/13/并发-3-线程安全/" data-title="并发-3-线程安全" data-url="renwei.github.io/blog/2016/12/13/并发-3-线程安全/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"screnwei"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+<section id="comment">
+</section>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/categories/hadoop/">hadoop</a><small>2</small></li>
+  
+    <li><a href="/blog/categories/jvm/">jvm</a><small>4</small></li>
+  
+    <li><a href="/blog/categories/多线程/">多线程</a><small>16</small></li>
+  
+    <li><a href="/blog/categories/技巧/">技巧</a><small>3</small></li>
+  
+    <li><a href="/blog/categories/搜索/">搜索</a><small>1</small></li>
+  
+    <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/flume/" style="font-size: 11.67px;">flume</a> <a href="/blog/tags/hadoop/" style="font-size: 13.33px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16.67px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18.33px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/spring/" style="font-size: 16.67px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/技巧/" style="font-size: 15px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 任伟
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

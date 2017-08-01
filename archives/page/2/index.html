@@ -56,24 +56,26 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-12-22T03:07:54.000Z"><a href="/blog/2016/12/22/jvm与并发 四/">2016-12-22</a></time>
+        <time datetime="2016-12-22T03:07:54.000Z"><a href="/blog/2016/12/22/jvm-4-锁与并发/">2016-12-22</a></time>
       
       
   
-    <h1 class="title"><a href="/blog/2016/12/22/jvm与并发 四/">jvm与并发（四）</a></h1>
+    <h1 class="title"><a href="/blog/2016/12/22/jvm-4-锁与并发/">jvm-4-锁与并发</a></h1>
   
 
     </header>
     <div class="entry">
          <!--01-->
-        <h2 id="一、锁优化的思路和方法"><a href="#一、锁优化的思路和方法" class="headerlink" title="一、锁优化的思路和方法"></a>一、锁优化的思路和方法</h2><p>一旦用到锁，就说明这是阻塞式的，所以在并发度上一般来说都会比无锁的情况低一点。<br>这里提到的锁优化，是指在阻塞式的情况下，如何让性能不要变得太差。但是再怎么优化，一般来说性能都会比无锁的情况差一点。锁优化的思路和方法总结一下，有以下几种:</p>
+        <h2 id="一、安全就是锁存在的理由：锁的基本概念"><a href="#一、安全就是锁存在的理由：锁的基本概念" class="headerlink" title="一、安全就是锁存在的理由：锁的基本概念"></a>一、安全就是锁存在的理由：锁的基本概念</h2><h3 id="锁的价值"><a href="#锁的价值" class="headerlink" title="锁的价值"></a>锁的价值</h3><p>锁的基本作用是保护临界资源不会被多个线程同时访问而受破坏，通过锁，可以让多个线程排队，一个一个地进入临界区访问目标对象，使目标对象的状态总是保持一致。</p>
+<h3 id="对象头和锁"><a href="#对象头和锁" class="headerlink" title="对象头和锁"></a>对象头和锁</h3><p>在JVM中，每个对象都有一个对象头。<br>Mark Word，对象头的标记，32位（32位系统）、描述对象的hash、锁信息，垃圾回收标记，年龄、指向锁记录的指针，指向monitor的指针，偏向锁线程ID等。</p>
+<p>简单来说，对象头就是要保存一些系统性的信息。</p>
       
     </div>
     <footer>
       
         
           <div class="alignleft">
-            <a href="/blog/2016/12/22/jvm与并发 四/#more" class="more-link">Read More</a>
+            <a href="/blog/2016/12/22/jvm-4-锁与并发/#more" class="more-link">Read More</a>
           </div>
         
         
@@ -176,11 +178,11 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-12-14T07:32:16.000Z"><a href="/blog/2016/12/14/5-spring-单元测试/">2016-12-14</a></time>
+        <time datetime="2016-12-14T07:32:16.000Z"><a href="/blog/2016/12/14/spring-5-单元测试/">2016-12-14</a></time>
       
       
   
-    <h1 class="title"><a href="/blog/2016/12/14/5-spring-单元测试/">5-spring-单元测试</a></h1>
+    <h1 class="title"><a href="/blog/2016/12/14/spring-5-单元测试/">5-spring-单元测试</a></h1>
   
 
     </header>
@@ -200,7 +202,7 @@
       
         
           <div class="alignleft">
-            <a href="/blog/2016/12/14/5-spring-单元测试/#more" class="more-link">Read More</a>
+            <a href="/blog/2016/12/14/spring-5-单元测试/#more" class="more-link">Read More</a>
           </div>
         
         
@@ -221,11 +223,11 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-12-14T07:31:07.000Z"><a href="/blog/2016/12/14/4-spring-SpringMVC/">2016-12-14</a></time>
+        <time datetime="2016-12-14T07:31:07.000Z"><a href="/blog/2016/12/14/spring-4-SpringMVC/">2016-12-14</a></time>
       
       
   
-    <h1 class="title"><a href="/blog/2016/12/14/4-spring-SpringMVC/">4-spring-SpringMVC</a></h1>
+    <h1 class="title"><a href="/blog/2016/12/14/spring-4-SpringMVC/">4-spring-SpringMVC</a></h1>
   
 
     </header>
@@ -238,7 +240,7 @@
       
         
           <div class="alignleft">
-            <a href="/blog/2016/12/14/4-spring-SpringMVC/#more" class="more-link">Read More</a>
+            <a href="/blog/2016/12/14/spring-4-SpringMVC/#more" class="more-link">Read More</a>
           </div>
         
         
@@ -259,11 +261,11 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-12-14T07:29:40.000Z"><a href="/blog/2016/12/14/3-spring-数据访问/">2016-12-14</a></time>
+        <time datetime="2016-12-14T07:29:40.000Z"><a href="/blog/2016/12/14/spring-3-数据访问/">2016-12-14</a></time>
       
       
   
-    <h1 class="title"><a href="/blog/2016/12/14/3-spring-数据访问/">3-spring-数据访问</a></h1>
+    <h1 class="title"><a href="/blog/2016/12/14/spring-3-数据访问/">3-spring-数据访问</a></h1>
   
 
     </header>
@@ -278,7 +280,7 @@
       
         
           <div class="alignleft">
-            <a href="/blog/2016/12/14/3-spring-数据访问/#more" class="more-link">Read More</a>
+            <a href="/blog/2016/12/14/spring-3-数据访问/#more" class="more-link">Read More</a>
           </div>
         
         
@@ -299,11 +301,11 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-12-14T07:28:20.000Z"><a href="/blog/2016/12/14/2-spring-AoP/">2016-12-14</a></time>
+        <time datetime="2016-12-14T07:28:20.000Z"><a href="/blog/2016/12/14/spring-2-AoP/">2016-12-14</a></time>
       
       
   
-    <h1 class="title"><a href="/blog/2016/12/14/2-spring-AoP/">2-spring-AoP</a></h1>
+    <h1 class="title"><a href="/blog/2016/12/14/spring-2-AoP/">2-spring-AoP</a></h1>
   
 
     </header>
@@ -318,7 +320,7 @@
       
         
           <div class="alignleft">
-            <a href="/blog/2016/12/14/2-spring-AoP/#more" class="more-link">Read More</a>
+            <a href="/blog/2016/12/14/spring-2-AoP/#more" class="more-link">Read More</a>
           </div>
         
         
@@ -339,11 +341,11 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-12-14T07:24:25.000Z"><a href="/blog/2016/12/14/1-pring-IoC/">2016-12-14</a></time>
+        <time datetime="2016-12-14T07:24:25.000Z"><a href="/blog/2016/12/14/spring-1-IoC/">2016-12-14</a></time>
       
       
   
-    <h1 class="title"><a href="/blog/2016/12/14/1-pring-IoC/">1-spring-IoC</a></h1>
+    <h1 class="title"><a href="/blog/2016/12/14/spring-1-IoC/">1-spring-IoC</a></h1>
   
 
     </header>
@@ -359,7 +361,7 @@
       
         
           <div class="alignleft">
-            <a href="/blog/2016/12/14/1-pring-IoC/#more" class="more-link">Read More</a>
+            <a href="/blog/2016/12/14/spring-1-IoC/#more" class="more-link">Read More</a>
           </div>
         
         

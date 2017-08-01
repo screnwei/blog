@@ -1,0 +1,261 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>3-spring-数据访问 | 十年磨剑</title>
+  <meta name="author" content="任伟">
+  
+  <meta name="description" content="1、Spring 对 DAO的支持
+Spring支持目前大多数常用的数据持久化技术，Spring定义了一套面向DAO层的异常体系，并未各种支持的持久化技术提供了异常转换器。这样，我们在设计DAO接口时，就可以抛开具体的实现技术，定义统一的接口。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="3-spring-数据访问"/>
+  <meta property="og:site_name" content="十年磨剑"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="十年磨剑" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">十年磨剑</a></h1>
+  <h2><a href="/blog/">十年磨一剑，一朝试锋芒</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog//">首页</a></li>
+    
+      <li><a href="/blog//archives">归档</a></li>
+    
+      <li><a href="/blog//about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-14T07:29:40.000Z"><a href="/blog/2016/12/14/spring-3-数据访问/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="title">3-spring-数据访问</h1>
+  
+
+    </header>
+    <div class="entry">
+         <!--02-->
+        <div id="toc" class="toc-article">
+    <div class="toc-title">目录</div>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、Spring-对-DAO的支持"><span class="toc-text">1、Spring 对 DAO的支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、Spring的事务管理"><span class="toc-text">2、Spring的事务管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、Spring事务管理难点剖析"><span class="toc-text">3、Spring事务管理难点剖析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、使用Spring-JDBC访问数据库"><span class="toc-text">4、使用Spring JDBC访问数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、整合其他ORM框架"><span class="toc-text">5、整合其他ORM框架</span></a></li></ol>
+</div>
+
+      
+        <h3 id="1、Spring-对-DAO的支持"><a href="#1、Spring-对-DAO的支持" class="headerlink" title="1、Spring 对 DAO的支持"></a>1、Spring 对 DAO的支持</h3><ul>
+<li>Spring支持目前大多数常用的数据持久化技术，Spring定义了一套面向DAO层的异常体系，并未各种支持的持久化技术提供了异常转换器。这样，我们在设计DAO接口时，就可以抛开具体的实现技术，定义统一的接口。</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li><p>不管采用 何种持久化技术，访问数据的流程是相对固定的。Spring将数据访问流程划分为固定和变化两个部分，并以模板的方式定好流程，用回调接口将变化的部分开放出来，留给开发者自行定义。这样，我们仅需要提供业务相关的逻辑就可以完成整体的数据访问了。</p>
+</li>
+<li><p>Spring为了进一步简化持久模板类的使用，为各个持久化技术提供了便捷的支持类，支持类不但包含数据访问模板，还包含数据源或会话等内容。通过扩展支持类定义自己的数据访问类是最简单的数据访问方式。</p>
+</li>
+<li><p>不管采用何种持久化技术，都需要定义数据源。在实际部署中，我们可能会采用应用服务器本身提供的数据源，这时，则可以通过JndiObjectFactoryBean或jee命名空间引用JNDI中的数据源。</p>
+</li>
+</ul>
+<h3 id="2、Spring的事务管理"><a href="#2、Spring的事务管理" class="headerlink" title="2、Spring的事务管理"></a>2、Spring的事务管理</h3><ul>
+<li><p>Spring使声明式事务平民化，事务作为一个切面织入到目标业务方法的周围，业务方法完全从事务代码中解脱出来，代码的复杂度大大降低。被织入的事务代码基于Spring事务同步管理器进行工作，事务同步管理器维护着业务类对象线程相关资源。DAO类需要利用资源获取工具访问底层数据连接，或者直接建立在相应持久化模板类的基础上。</p>
+</li>
+<li><p>Spring的事务配置主要提供两方面的信息：其一，切点信息，用于定位实施事务切面的业务类方法；其二，控制事务行为的事务属性，这些属性包括事务隔离级别、事务传播行为、超时时间、回滚规则。</p>
+</li>
+</ul>
+<h3 id="3、Spring事务管理难点剖析"><a href="#3、Spring事务管理难点剖析" class="headerlink" title="3、Spring事务管理难点剖析"></a>3、Spring事务管理难点剖析</h3><ul>
+<li><p>在没有事务管理的情况下，DAO照样可以顺利进行数据操作；<br>将应用分为Web、Service及DAO层只是一种参考的开发模式，并非是事务管理工作的前提条件；</p>
+</li>
+<li><p>Spring通过事务传播机制可以很好地应对事务方法嵌套调用的情况，开发者无须为了事务管理而可以改变服务方法的设计；</p>
+</li>
+<li><p>经过事务管理增强的到实例Bean不存在线程安全问题，可以很好地工作在多线程环境下；</p>
+</li>
+<li><p>混合使用多个数据访问框架的最佳组合是一个ORM技术框架（Hibernate 或 JPA）+ 一个JDBC技术框架（Spring JDBC 或 iBatis）。直接使用ORM技术框架对应的事管理器就行了，但必须考虑ORM缓存同步问题；</p>
+</li>
+<li><p>Spring AOP增强有两个方案：其一是基于接口的动态代理，其二为基于CGLib动态生成子类的代理。由于Java语言的特性，有些特殊方法不能被Spring AOP代理，所以无法享受AOP织入到来的事务增强；</p>
+</li>
+<li><p>使用Spring JDBC时如果直接使用Connection，可能会造成连接泄漏。为降低连接泄漏的可能性，尽量使用DataSourceUtils获取数据连接。也可以对数据源进行代理，以便数据源拥有感知事务上下文的能力；</p>
+</li>
+</ul>
+<h3 id="4、使用Spring-JDBC访问数据库"><a href="#4、使用Spring-JDBC访问数据库" class="headerlink" title="4、使用Spring JDBC访问数据库"></a>4、使用Spring JDBC访问数据库</h3><ul>
+<li>JdbcTemplate 使用大量的回调接口完成数据的访问操作，StatementCallback、PreparedStatementCallback、CallableStatementCallback、BatchPreparedStatementSetter以及RowMapper是其中常用的回调接口，一般可以通过匿名内部类实现这些回调接口，使代码更加紧凑；</li>
+</ul>
+<h3 id="5、整合其他ORM框架"><a href="#5、整合其他ORM框架" class="headerlink" title="5、整合其他ORM框架"></a>5、整合其他ORM框架</h3><ul>
+<li><p>Sprng为其所支持的ORM框架提供方便易用的FactoryBean用以创建ORM框架的基础设施。Spring通过模板类在不损失框架功能的前提下大大降低了使用这些ORM技术的难度。但也允许用户使用框架原生的API构造DAO，使用原生API时，Spring能保证用户获取到事务绑定的资源，Spring的事务管理机制同样有效；</p>
+</li>
+<li><p>具体的应用一般会定义一个项目级的DAO基类，简化接口方法、添加泛型支持，一个设计良好的DAO积累可以大大减少DAO层整体代码的总量，提高项目开发效率。</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/blog/categories/框架/">框架</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/java/">java</a>, <a href="/blog/tags/spring/">spring</a>
+  </div>
+
+        <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+    <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+    <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+    <a href="#" class="bds_renren" data-cmd="renren"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+</div>
+
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "16"
+        },
+        "share": {},
+        "image": {
+            "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+            "viewText": “分享到",
+            "viewSize": "16"
+        },
+        "selectShare": {
+            "bdContainerClass": null,
+            "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+        }
+    };
+    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination" >
+    
+    <a href="/blog/2016/12/14/spring-4-SpringMVC/" class="alignleft prev" >上一页</a>
+    
+    
+    <a href="/blog/2016/12/14/spring-2-AoP/" class="alignright next" >下一页</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+<!-- 多说评论框 start -->
+ <div class="ds-thread" data-thread-key="/blog/2016/12/14/spring-3-数据访问/" data-title="3-spring-数据访问" data-url="renwei.github.io/blog/2016/12/14/spring-3-数据访问/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"screnwei"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共JS代码 end -->
+<section id="comment">
+</section>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/categories/hadoop/">hadoop</a><small>2</small></li>
+  
+    <li><a href="/blog/categories/jvm/">jvm</a><small>4</small></li>
+  
+    <li><a href="/blog/categories/多线程/">多线程</a><small>16</small></li>
+  
+    <li><a href="/blog/categories/技巧/">技巧</a><small>3</small></li>
+  
+    <li><a href="/blog/categories/搜索/">搜索</a><small>1</small></li>
+  
+    <li><a href="/blog/categories/框架/">框架</a><small>5</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/blog/tags/GC/" style="font-size: 10px;">GC</a> <a href="/blog/tags/aop/" style="font-size: 10px;">aop</a> <a href="/blog/tags/curl/" style="font-size: 10px;">curl</a> <a href="/blog/tags/flume/" style="font-size: 11.67px;">flume</a> <a href="/blog/tags/hadoop/" style="font-size: 13.33px;">hadoop</a> <a href="/blog/tags/ioc/" style="font-size: 10px;">ioc</a> <a href="/blog/tags/java/" style="font-size: 16.67px;">java</a> <a href="/blog/tags/jvm/" style="font-size: 18.33px;">jvm</a> <a href="/blog/tags/jvm调优/" style="font-size: 10px;">jvm调优</a> <a href="/blog/tags/linux/" style="font-size: 11.67px;">linux</a> <a href="/blog/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/blog/tags/spring/" style="font-size: 16.67px;">spring</a> <a href="/blog/tags/tomcat/" style="font-size: 10px;">tomcat</a> <a href="/blog/tags/单元测试/" style="font-size: 10px;">单元测试</a> <a href="/blog/tags/基础算法/" style="font-size: 10px;">基础算法</a> <a href="/blog/tags/多线程/" style="font-size: 20px;">多线程</a> <a href="/blog/tags/技巧/" style="font-size: 15px;">技巧</a> <a href="/blog/tags/机器学习/" style="font-size: 10px;">机器学习</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 任伟
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.useso.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>
